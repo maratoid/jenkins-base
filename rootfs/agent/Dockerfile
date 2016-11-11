@@ -54,6 +54,6 @@ RUN export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)" \
 
 #Install helm
 RUN wget http://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}-linux-amd64.tar.gz \
-	&& tar xzf ./helm-v2.0.0-rc.2-linux-amd64.tar.gz \
+	&& tar xzf ./helm-${HELM_VERSION}-linux-amd64.tar.gz \
 	&& mv linux-amd64/helm /usr/local/bin \
-	&& rm -rf helm-v2.0.0-rc.2-linux-amd64.tar.gz linux-amd64
+	&& rm -rf helm-${HELM_VERSION}-linux-amd64.tar.gz linux-amd64
