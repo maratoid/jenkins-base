@@ -51,9 +51,9 @@ RUN export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)" \
     && apt-get update && apt-get install google-cloud-sdk \
     && wget -O /usr/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/${KUBERNETES_VERSION}/bin/linux/amd64/kubectl
 
-
-# RUN wget https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-sdk-${GOOGLE_CLOUD_SDK_VERSION}-linux-x86_64.tar.gz \
-#  && tar xzf google-cloud-sdk-${GOOGLE_CLOUD_SDK_VERSION}-linux-x86_64.tar.gz \
-#  && rm google-cloud-sdk-${GOOGLE_CLOUD_SDK_VERSION}-linux-x86_64.tar.gz \
-#  && google-cloud-sdk/install.sh --usage-reporting=false --path-update true --bash-completion true --rc-path ~/.bashrc \
-#  && rm -rf /google-cloud-sdk
+#Install helm
+RUN wget http://storage.googleapis.com/kubernetes-helm/helm-v2.0.0-rc.2-linux-amd64.tar.gz \
+	&& tar xzf ./helm-v2.0.0-rc.2-linux-amd64.tar.gz \
+	&& mv linux-amd64/helm /usr/local/bin \
+	&& rm -rf helm-v2.0.0-rc.2-linux-amd64.tar.gz linux-amd64
+	
