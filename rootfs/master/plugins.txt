@@ -1,3 +1,7 @@
+credentials-binding:1.9
+git:3.0.0 
+kubernetes:0.8
+workflow-aggregator:2.4
 ace-editor:1.0.1
 ansicolor:0.4.2
 ant:1.2

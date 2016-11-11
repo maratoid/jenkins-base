@@ -5,8 +5,7 @@ VOLUME /etc/jenkins_jobs
 
 
 # jenkins kubernetes plugin
-RUN /usr/local/bin/install-plugins.sh kubernetes:0.8 workflow-aggregator:2.4 credentials-binding:1.9 git:3.0.0 \
-    && mkdir -p /usr/share/jenkins/ref/secrets/ \
+RUN mkdir -p /usr/share/jenkins/ref/secrets/ \
     && echo "false" > /usr/share/jenkins/ref/secrets/slave-to-master-security-kill-switch
 
 # Preload host keys for github.com
@@ -15,5 +14,3 @@ RUN /usr/local/bin/install-plugins.sh kubernetes:0.8 workflow-aggregator:2.4 cre
 # Install Jenkins plugins
 COPY plugins.txt /usr/share/jenkins/plugins.txt
 RUN /usr/local/bin/plugins.sh /usr/share/jenkins/plugins.txt
-
-
