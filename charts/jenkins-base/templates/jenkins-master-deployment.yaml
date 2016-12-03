@@ -1,0 +1,209 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "jenkins" . }}
+  labels:
+    name: {{ template "jenkins" . }}
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    component: "{{.Release.Name}}-{{.Values.Jenkins.Master.Name}}"
+  annotations:
+    "helm.sh/created": {{.Release.Time.Seconds | quote }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: "{{.Release.Name}}-{{.Values.Jenkins.Master.Component}}"
+  template:
+    metadata:
+      labels:
+        name: {{ template "jenkins" . }}
+        heritage: {{.Release.Service | quote }}
+        release: {{.Release.Name | quote }}
+        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+        component: "{{.Release.Name}}-{{.Values.Jenkins.Master.Component}}"
+      annotations:
+        pod.alpha.kubernetes.io/init-containers: '[
+              {
+                  "name": "copy-default-configs",
+                  "image": "{{.Values.Jenkins.Master.Image}}:{{.Values.Jenkins.Master.ImageTag}}",
+                  "env": [
+                      {
+                        "name": "SLACK_API_TOKEN",
+                        "valueFrom": {
+                          "secretKeyRef": {
+                            "name": "jenkins-secrets",
+                            "key": "slackapitoken"
+                          }
+                        }
+                      },
+                      {
+                        "name": "GITHUB_CLIENT_ID",
+                        "valueFrom": {
+                          "secretKeyRef": {
+                            "name": "jenkins-secrets",
+                            "key": "githubclientid"
+                          }
+                        }
+                      },
+                      {
+                        "name": "GITHUB_CLIENT_KEY",
+                        "valueFrom": {
+                          "secretKeyRef": {
+                            "name": "jenkins-secrets",
+                            "key": "githubclientkey"
+                          }
+                        }
+                      },
+                      {
+                        "name": "GITHUB_ACCESS_TOKEN",
+                        "valueFrom": {
+                          "secretKeyRef": {
+                            "name": "jenkins-secrets",
+                            "key": "githubaccesstoken"
+                          }
+                        }
+                      }
+                   ],
+                  "command": ["sh", "/var/jenkins_config/init.sh"],
+                  "volumeMounts": [
+                      {
+                          "name": "jenkins-config",
+                          "mountPath": "/var/jenkins_config"
+                      },
+                      {
+                          "name": "jenkins-home",
+                          "mountPath": "/var/jenkins_home"
+                      },
+                      {
+                          "name": "jenkins-jobs",
+                          "mountPath": "/etc/jenkins-jobs"
+                      }
+                  ]
+              }
+         ]'
+    spec:
+      securityContext:
+        runAsUser: 0
+      containers:
+        - name: {{ template "jenkins" . }}
+          image: "{{.Values.Jenkins.Master.Image}}:{{.Values.Jenkins.Master.ImageTag}}"
+          imagePullPolicy: "{{.Values.Jenkins.Master.ImagePullPolicy}}"
+          args: [ "--argumentsRealm.passwd.$(ADMIN_USER)=$(ADMIN_PASSWORD)",  "--argumentsRealm.roles.$(ADMIN_USER)=admin"]
+          env:
+            - name: JAVA_OPTS
+              value: "{{ .Values.Jenkins.Master.JavaOpts }}"
+            - name: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "jenkins" . }}
+                  key: jenkins-admin-password
+            - name: ADMIN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "jenkins" . }}
+                  key: jenkins-admin-user
+            - name: VIRTUAL_HOST
+              value: "{{ .Values.Nginx.domain }}"
+            - name: VIRTUAL_PORT
+              value: "{{ .Values.Jenkins.Master.ContainerPort }}"
+            - name: SLACK_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: jenkins-secrets
+                  key: slackapitoken
+            - name: GITHUB_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: jenkins-secrets
+                  key: githubclientid
+            - name: GITHUB_CLIENT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jenkins-secrets
+                  key: githubclientkey
+            - name: GITHUB_ACCESS_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: jenkins-secrets
+                  key: githubaccesstoken
+            - name: GITHUB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: jenkins-secrets
+                  key: githubusername
+          ports:
+            - containerPort: {{.Values.Jenkins.Master.ContainerPort}}
+              name: http
+            - containerPort: {{.Values.Jenkins.Master.SlaveListenerPort}}
+              name: slavelistener
+          resources:
+            requests:
+              cpu: "{{.Values.Jenkins.Master.Cpu}}"
+              memory: "{{.Values.Jenkins.Master.Memory}}"
+          livenessProbe:
+            httpGet:
+              path: /robots.txt
+              port: http
+            initialDelaySeconds: 250
+            timeoutSeconds: 2
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                - "/bin/bash"
+                - "-ec"
+                - |
+                  echo "LOADING JOBS";
+                  RESP=$(curl -s -w "%{http_code}" http://localhost:{{.Values.Jenkins.Master.ContainerPort}} -o /dev/null || true);
+                  sleep 5;
+                  while [ "$RESP" != "200" ] && [ "$RESP" != "403" ]; do sleep 1 && echo .; RESP=$(curl -s -w "%{http_code}" http://localhost:{{.Values.Jenkins.Master.ContainerPort}} -o /dev/null || true); done
+                  # git clone {{.Values.Jenkins.Master.JobsRepo}} /etc/jenkins_jobs/jobs
+                  # jenkins-jobs update --recursive --exclude /etc/jenkins_jobs/jobs/excluded-on-jenkins:/etc/jenkins_jobs/jobs/k2-configs /etc/jenkins_jobs
+                  
+          volumeMounts:
+            -
+              mountPath: /var/jenkins_home
+              name: jenkins-home
+              readOnly: false
+            -
+              mountPath: /var/jenkins_config
+              name: jenkins-config
+              readOnly: false
+            -
+              mountPath: /var/jenkins_home/jobs
+              name: jenkins-jobs
+              readOnly: false
+            -
+              mountPath: /etc/secret-volume
+              name: secret-volume
+              readOnly: true
+            -
+              mountPath: /etc/gke-secrets
+              name: gke-secrets
+              readOnly: true
+
+      imagePullSecrets:
+      - name: zonar3
+      volumes:
+      - name: jenkins-config
+        configMap:
+          name: {{ template "jenkins" . }}
+          "defaultMode": 0775
+      - name: jenkins-home
+        emptyDir: {}
+      - name: secret-volume
+        secret:
+          secretName: jenkins-secrets
+      - name: gke-secrets
+        secret: 
+            secretName: cluster-secrets
+      {{- if .Values.Jenkins.Persistence.Enabled }}
+      - name: jenkins-jobs
+        persistentVolumeClaim:
+          claimName: {{ template "jenkins" . }}
+      {{- else }}
+      - name: jenkins-jobs
+        emptyDir: {}
+      {{- end -}}

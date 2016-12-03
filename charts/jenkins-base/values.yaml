@@ -1,0 +1,70 @@
+# Default values for jenkins.
+# This is a YAML-formatted file.
+# Declare name/value pairs to be passed into your templates.
+# name: value
+
+Jenkins:
+  Master:
+    Name: jenkins-master
+    Image: "gcr.io/sds-readiness/jenkins-master"
+    ImageTag: "latest"
+    ImagePullPolicy: "Always"
+    Component: "jenkins-master"
+    AdminUser: admin
+  # AdminPassword: <defaults to random>
+    Jenkins_admin_usernames: "zonarbot jfelten countspongebob l337ch maratoid mikeln richardkaufmann Rick-Lindberg SamsungAGJenkinsBot spiffxp davidewatson cwazy1 coffeepac venezia jooyeong alejandroEsc sostheim DStorck leahnp kmansel"
+    Cpu: "200m"
+    Memory: "512Mi"
+  # Set min/max heap here if needed with:
+  # JavaOpts: "-Xms512m -Xmx512m"
+  # JavaOpts: "-Djenkins.install.runSetupWizard=false"
+    ServicePort: 8080
+  # For minikube, set this to NodePort, elsewhere use LoadBalancer
+    ServiceType: NodePort
+    ContainerPort: 8080
+    SlaveListenerPort: 50000
+    test_instance: "no"
+    secrets_dir: "/var/jenkins_home/secrets"
+    AdminPassword: "admin"
+    JobsRepo: "https://github.com/samsung-cnct/kraken-ci-jobs"
+    slack_api_token: "{{ lookup('env','SLACK_API_TOKEN') }}"
+    slack_domain: samsung-cnct
+    slack_room: "#team-zonar"
+    Enable_Security: False
+    GitHub:
+      manageWebHooks: True
+
+  
+  Agent:
+    Image: gcr.io/sds-readiness/jenkins-slave
+    ImageTag: latest
+    Cpu: "200m"
+    Memory: "256Mi"
+    secret_volume: "/etc/gke-secrets"
+    secret_name: "cluster-secrets"
+    kubernetes_cluster: "zonar-production-cluster"
+  Persistence:
+    Component: "data_volume"
+    Enabled: false
+    StorageClass: generic
+    AccessMode: ReadWriteOnce
+    Size: 8Gi
+    
+Nginx:
+  Component: "certs"
+  Enabled: true
+  StorageClass: generic
+  AccessMode: ReadWriteOnce
+  Size: 8Gi
+  domain: "jenkins-test.zonar.cnct.io"
+  machine_name: "jenkins"
+  letsencrypt_email: "john.felten+zonarbot@gmail.com"
+  service_type: ClusterIP
+
+cluster_home_project: "sds-readiness"
+dns_zone: "zonar-cnct-io"
+dns_gcloud_project: "cnct-zonar-1316"
+dns_gcloud_service_account: "zonar-jenkins@cnct-zonar-1316.iam.gserviceaccount.com"
+dns_gcloud_service_account_key_file: "/etc/gke-secrets/service-account.json"
+
+command: 'kubectl get svc ${SERVICE_NAME} --template="{{range .status.loadBalancer.ingress}}{{.ip}}{{end}}"'
