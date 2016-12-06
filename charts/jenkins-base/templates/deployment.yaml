@@ -1,33 +1,33 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: {{ template "jenkins" . }}
+  name: jenkins
   labels:
-    name: {{ template "jenkins" . }}
+    name: jenkins
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
     chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-    component: "{{.Release.Name}}-{{.Values.Jenkins.Master.Name}}"
+    component: "{{.Release.Name}}-jenkins-master"
   annotations:
     "helm.sh/created": {{.Release.Time.Seconds | quote }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      component: "{{.Release.Name}}-{{.Values.Jenkins.Master.Component}}"
+      component: "{{.Release.Name}}-jenkins-master"
   template:
     metadata:
       labels:
-        name: {{ template "jenkins" . }}
+        name: jenkins
         heritage: {{.Release.Service | quote }}
         release: {{.Release.Name | quote }}
         chart: "{{.Chart.Name}}-{{.Chart.Version}}"
-        component: "{{.Release.Name}}-{{.Values.Jenkins.Master.Component}}"
+        component: "{{.Release.Name}}-jenkins-master"
       annotations:
         pod.alpha.kubernetes.io/init-containers: '[
               {
                   "name": "copy-default-configs",
-                  "image": "{{.Values.Jenkins.Master.Image}}:{{.Values.Jenkins.Master.ImageTag}}",
+                  "image": "{{.Values.master.image}}",
                   "env": [
                       {
                         "name": "SLACK_API_TOKEN",
@@ -87,27 +87,27 @@ spec:
       securityContext:
         runAsUser: 0
       containers:
-        - name: {{ template "jenkins" . }}
-          image: "{{.Values.Jenkins.Master.Image}}:{{.Values.Jenkins.Master.ImageTag}}"
-          imagePullPolicy: "{{.Values.Jenkins.Master.ImagePullPolicy}}"
+        - name: jenkins
+          image: "{{.Values.master.image}}"
+          imagePullPolicy: Always
           args: [ "--argumentsRealm.passwd.$(ADMIN_USER)=$(ADMIN_PASSWORD)",  "--argumentsRealm.roles.$(ADMIN_USER)=admin"]
           env:
             - name: JAVA_OPTS
-              value: "{{ .Values.Jenkins.Master.JavaOpts }}"
+              value: "{{ .Values.javaOptions }}"
             - name: ADMIN_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "jenkins" . }}
+                  name: jenkins
                   key: jenkins-admin-password
             - name: ADMIN_USER
               valueFrom:
                 secretKeyRef:
-                  name: {{ template "jenkins" . }}
+                  name: jenkins
                   key: jenkins-admin-user
             - name: VIRTUAL_HOST
-              value: "{{ .Values.Nginx.domain }}"
+              value: "{{.Values.jenkinsUrl}}"
             - name: VIRTUAL_PORT
-              value: "{{ .Values.Jenkins.Master.ContainerPort }}"
+              value: "{{.Values.master.port}}"
             - name: SLACK_API_TOKEN
               valueFrom:
                 secretKeyRef:
@@ -140,8 +140,8 @@ spec:
               name: slavelistener
           resources:
             requests:
-              cpu: "{{.Values.Jenkins.Master.Cpu}}"
-              memory: "{{.Values.Jenkins.Master.Memory}}"
+              cpu: "{{.Values.master.cpu}}"
+              memory: "{{.Values.master.memory}}"
           livenessProbe:
             httpGet:
               path: /robots.txt
@@ -156,11 +156,9 @@ spec:
                 - "-ec"
                 - |
                   echo "LOADING JOBS";
-                  RESP=$(curl -s -w "%{http_code}" http://localhost:{{.Values.Jenkins.Master.ContainerPort}} -o /dev/null || true);
-                  sleep 5;
-                  while [ "$RESP" != "200" ] && [ "$RESP" != "403" ]; do sleep 1 && echo .; RESP=$(curl -s -w "%{http_code}" http://localhost:{{.Values.Jenkins.Master.ContainerPort}} -o /dev/null || true); done
-                  # git clone {{.Values.Jenkins.Master.JobsRepo}} /etc/jenkins_jobs/jobs
-                  # jenkins-jobs update --recursive --exclude /etc/jenkins_jobs/jobs/excluded-on-jenkins:/etc/jenkins_jobs/jobs/k2-configs /etc/jenkins_jobs
+                  while [[ $(curl -s -w "%{http_code}" http://localhost:{{.Values.master.port}} -o /dev/null) != "200" ]]; do sleep 5; done
+                  git clone {{.Values.jobsRepo}} /etc/jenkins_jobs/jobs
+                  jenkins-jobs update --recursive --exclude /etc/jenkins_jobs/jobs/excluded-on-jenkins:/etc/jenkins_jobs/jobs/k2-configs /etc/jenkins_jobs
                   
           volumeMounts:
             -
@@ -189,7 +187,7 @@ spec:
       volumes:
       - name: jenkins-config
         configMap:
-          name: {{ template "jenkins" . }}
+          name: jenkins
           "defaultMode": 0775
       - name: jenkins-home
         emptyDir: {}
@@ -199,10 +197,10 @@ spec:
       - name: gke-secrets
         secret: 
             secretName: cluster-secrets
-      {{- if .Values.Jenkins.Persistence.Enabled }}
+      {{- if .Values.persistence.enabled }}
       - name: jenkins-jobs
         persistentVolumeClaim:
-          claimName: {{ template "jenkins" . }}
+          claimName: jenkins
       {{- else }}
       - name: jenkins-jobs
         emptyDir: {}

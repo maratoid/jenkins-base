@@ -3,68 +3,61 @@
 # Declare name/value pairs to be passed into your templates.
 # name: value
 
-Jenkins:
-  Master:
-    Name: jenkins-master
-    Image: "gcr.io/sds-readiness/jenkins-master"
-    ImageTag: "latest"
-    ImagePullPolicy: "Always"
-    Component: "jenkins-master"
-    AdminUser: admin
-  # AdminPassword: <defaults to random>
-    Jenkins_admin_usernames: "zonarbot jfelten countspongebob l337ch maratoid mikeln richardkaufmann Rick-Lindberg SamsungAGJenkinsBot spiffxp davidewatson cwazy1 coffeepac venezia jooyeong alejandroEsc sostheim DStorck leahnp kmansel"
-    Cpu: "200m"
-    Memory: "512Mi"
-  # Set min/max heap here if needed with:
-  # JavaOpts: "-Xms512m -Xmx512m"
-  # JavaOpts: "-Djenkins.install.runSetupWizard=false"
-    ServicePort: 8080
-  # For minikube, set this to NodePort, elsewhere use LoadBalancer
-    ServiceType: NodePort
-    ContainerPort: 8080
-    SlaveListenerPort: 50000
-    test_instance: "no"
-    secrets_dir: "/var/jenkins_home/secrets"
-    AdminPassword: "admin"
-    JobsRepo: "https://github.com/samsung-cnct/kraken-ci-jobs"
-    slack_api_token: "{{ lookup('env','SLACK_API_TOKEN') }}"
-    slack_domain: samsung-cnct
-    slack_room: "#team-zonar"
-    Enable_Security: False
-    GitHub:
-      manageWebHooks: True
+# github, jenkins or ldap
+adminEmail: "maratoid+samsungjenkins@gmail.com"
+adminPassword: "admin"
+adminUser: "admin"
+javaOptions: "-Xms512m -Xmx512m -Djenkins.install.runSetupWizard=false"
+jenkinsUrl: "jenkins.cnct.io"
+jobsRepo: "https://github.com/samsung-cnct/kraken-ci-jobs"
+kubernetes_cluster: "production-cluster"
+secretName: "cluster-secrets"
+secretVolume: "/etc/gke-secrets"
+security: "github"
+slackDomain: "samsung-cnct"
+slackRoom: "#ping-jenkins"
 
-  
-  Agent:
-    Image: gcr.io/sds-readiness/jenkins-slave
-    ImageTag: latest
-    Cpu: "200m"
-    Memory: "256Mi"
-    secret_volume: "/etc/gke-secrets"
-    secret_name: "cluster-secrets"
-    kubernetes_cluster: "zonar-production-cluster"
-  Persistence:
-    Component: "data_volume"
-    Enabled: false
-    StorageClass: generic
-    AccessMode: ReadWriteOnce
-    Size: 8Gi
-    
-Nginx:
-  Component: "certs"
-  Enabled: true
-  StorageClass: generic
-  AccessMode: ReadWriteOnce
-  Size: 8Gi
-  domain: "jenkins-test.zonar.cnct.io"
-  machine_name: "jenkins"
-  letsencrypt_email: "john.felten+zonarbot@gmail.com"
-  service_type: ClusterIP
+persistence:
+  component: "data_volume"
+  enabled: false
+  storageClass: "generic"
+  accessMode: "ReadWriteOnce"
+  size: 8Gi
 
-cluster_home_project: "sds-readiness"
-dns_zone: "zonar-cnct-io"
-dns_gcloud_project: "cnct-zonar-1316"
-dns_gcloud_service_account: "zonar-jenkins@cnct-zonar-1316.iam.gserviceaccount.com"
-dns_gcloud_service_account_key_file: "/etc/gke-secrets/service-account.json"
+ldap:
+  ldapServer:
+  rootDN:
+  userSearchBase:
+  userSearchFilter: "uid={0}"
+  groupMembershipFilter:
+  managerDN:
+  managerDNPassword: "change me"
 
-command: 'kubectl get svc ${SERVICE_NAME} --template="{{range .status.loadBalancer.ingress}}{{.ip}}{{end}}"'
+github:
+  admin_usernames: "zonarbot jfelten countspongebob l337ch maratoid mikeln richardkaufmann Rick-Lindberg SamsungAGJenkinsBot spiffxp davidewatson cwazy1 coffeepac venezia jooyeong alejandroEsc sostheim DStorck leahnp kmansel"
+
+agent:
+  image: "quay.io/samsung_cnct/jenkins-kubernetes-slave:latest"
+  cpu: "200m"
+  memory: "256Mi"
+  port: 50000
+
+master:
+  master_image: "quay.io/samsung_cnct/jenkins-kubernetes-master:latest"
+  cpu: "200m"
+  memory: "512Mi"
+  port: 8080
+
+secrets:
+  slackApiToken: "change me"
+  githubClientId: "change me"
+  githubAccessToken: "change me"
+  githubUserName: "change me"
+  githubClientKey: "change me"
+  sshPrivateKeyFile:
+  sshPrivateKey: "change me"
+  sshPublicKeyFile:
+  sshPublicKey: "change me"
+  svcAccountId: "change me"
+  svcAccountKeyFile:
+  svcAccountKey: "change me"

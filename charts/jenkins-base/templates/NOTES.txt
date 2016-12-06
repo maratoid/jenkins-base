@@ -1,0 +1,11 @@
+Get your '{{ .Values.adminUser }}' user password by running:
+  printf $(printf '\%o' `kubectl get secret --namespace {{ .Release.Namespace }} jenkins -o jsonpath="{.data.Jenkins-admin-password[*]}"`);echo
+
+{{- if .Values.persistence.enabled }}
+{{- else }}
+#################################################################################
+######   WARNING: Persistence is disabled!!! You will lose your data when   #####
+######            the Jenkins pod is terminated.                            #####
+#################################################################################
+{{- end }}
+
