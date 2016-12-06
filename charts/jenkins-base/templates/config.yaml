@@ -1,0 +1,323 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jenkins-configuration
+data:
+  config.xml: |-
+    <hudson>
+      <disabledAdministrativeMonitors>
+        <string>hudson.diagnosis.ReverseProxySetupMonitor</string>
+      </disabledAdministrativeMonitors>
+      <version>2.19.3</version>
+      <numExecutors>0</numExecutors>
+      <mode>NORMAL</mode>
+      <useSecurity>true</useSecurity>
+      {{if eq .Values.security "github"}}
+      <authorizationStrategy class="org.jenkinsci.plugins.GithubAuthorizationStrategy" plugin="github-oauth@0.22.2">
+        <rootACL>
+          <organizationNameList class="linked-list">
+            <string></string>
+          </organizationNameList>
+          <adminUserNameList class="linked-list">
+            {{ range .Values.github.admin_usernames | split " " }}
+            <string>{{ . }}</string>
+            {{ end }}
+          </adminUserNameList>
+          <authenticatedUserReadPermission>false</authenticatedUserReadPermission>
+          <useRepositoryPermissions>true</useRepositoryPermissions>
+          <authenticatedUserCreateJobPermission>false</authenticatedUserCreateJobPermission>
+          <allowGithubWebHookPermission>true</allowGithubWebHookPermission>
+          <allowCcTrayPermission>false</allowCcTrayPermission>
+          <allowAnonymousReadPermission>false</allowAnonymousReadPermission>
+          <allowAnonymousJobStatusPermission>false</allowAnonymousJobStatusPermission>
+        </rootACL>
+      </authorizationStrategy>
+      <securityRealm class="org.jenkinsci.plugins.GithubSecurityRealm">
+        <githubWebUri>https://github.com</githubWebUri>
+        <githubApiUri>https://api.github.com</githubApiUri>
+         <clientID>$GITHUB_CLIENT_ID</clientID>
+         <clientSecret>$GITHUB_CLIENT_KEY</clientSecret>
+        <oauthScopes>read:org,user:email</oauthScopes>
+      </securityRealm>
+      {{else if eq .Values.security "jenkins"}}
+      <authorizationStrategy class="hudson.security.FullControlOnceLoggedInAuthorizationStrategy">
+        <denyAnonymousReadAccess>false</denyAnonymousReadAccess>
+      </authorizationStrategy>
+      <securityRealm class="hudson.security.HudsonPrivateSecurityRealm">
+        <disableSignup>false</disableSignup>
+        <enableCaptcha>false</enableCaptcha>
+      </securityRealm>
+      {{else if eq .Values.security "ldap"}}
+      <authorizationStrategy class="hudson.security.FullControlOnceLoggedInAuthorizationStrategy">
+        <denyAnonymousReadAccess>false</denyAnonymousReadAccess>
+      </authorizationStrategy>
+      <securityRealm class="hudson.security.LDAPSecurityRealm" plugin="ldap@1.13">
+        <server>{{.Values.ldapServer}}</server>
+        <rootDN>{{.Values.rootDN}}</rootDN>
+        <inhibitInferRootDN>false</inhibitInferRootDN>
+        <userSearchBase>{{.Values.userSearchBase}}</userSearchBase>
+        <userSearch>{{.Values.userSearchFilter}}</userSearch>
+        <groupMembershipStrategy class="jenkins.security.plugins.ldap.FromGroupSearchLDAPGroupMembershipStrategy">
+          <filter>{{.Values.groupMembershipFilter}}</filter>
+        </groupMembershipStrategy>
+        {{if .Values.ldap.managerDN}}
+        <managerDN>{{.Values.ldap.managerDN}}</managerDN>
+        {{end}}
+        <managerPasswordSecret>{{.Values.ldap.managerDNPassword}}</managerPasswordSecret>
+        <disableMailAddressResolver>false</disableMailAddressResolver>
+        <displayNameAttributeName>displayname</displayNameAttributeName>
+        <mailAddressAttributeName>mail</mailAddressAttributeName>
+        <userIdStrategy class="jenkins.model.IdStrategy$CaseInsensitive"/>
+        <groupIdStrategy class="jenkins.model.IdStrategy$CaseInsensitive"/>
+      </securityRealm>
+      {{end}}
+      <disableRememberMe>false</disableRememberMe>
+      <projectNamingStrategy class="jenkins.model.ProjectNamingStrategy$DefaultProjectNamingStrategy"/>
+      <workspaceDir>${JENKINS_HOME}/workspace/${ITEM_FULLNAME}</workspaceDir>
+      <buildsDir>${ITEM_ROOTDIR}/builds</buildsDir>
+      <markupFormatter class="hudson.markup.EscapedMarkupFormatter"/>
+      <jdks/>
+      <viewsTabBar class="hudson.views.DefaultViewsTabBar"/>
+      <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar"/>
+      <clouds>
+        <org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud plugin="kubernetes@0.8">
+          <name>{{ .Values.kubernetes_cluster }}</name>
+          <templates>
+            <org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
+              <name>default</name>
+              <instanceCap>2147483647</instanceCap>
+              <label></label>
+              <nodeSelector></nodeSelector>
+              <volumes>
+                <org.csanchez.jenkins.plugins.kubernetes.PodVolumes_-SecretVolume>
+                  <mountPath>{{.Values.secretVolume}}</mountPath>
+                  <secretName>{{.Values.secretName}}</secretName>
+                </org.csanchez.jenkins.plugins.kubernetes.PodVolumes_-SecretVolume>
+              </volumes>
+              <containers>
+                <org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
+                  <name>default</name>
+                  <image>{{ .Values.agent.image }}</image>
+                  <privileged>false</privileged>
+                  <alwaysPullImage>true</alwaysPullImage>
+                  <workingDir>/home/jenkins</workingDir>
+                  <command></command>
+                  <args>${computer.jnlpmac} ${computer.name}</args>
+                  <ttyEnabled>false</ttyEnabled>
+                  <resourceRequestCpu>{{.Values.agent.cpu}}</resourceRequestCpu>
+                  <resourceRequestMemory>{{.Values.agent.memory}}</resourceRequestMemory>
+                  <resourceLimitCpu>{{.Values.agent.cpu}}</resourceLimitCpu>
+                  <resourceLimitMemory>{{.Values.agent.memory}}</resourceLimitMemory>
+                  <envVars/>
+                </org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
+              </containers>
+              <annotations/>
+              <imagePullSecrets/>
+            </org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
+          </templates>
+          <serverUrl>https://kubernetes.default.svc.cluster.local</serverUrl>
+          <skipTlsVerify>true</skipTlsVerify>
+          <namespace>default</namespace>
+          <jenkinsUrl>http://jenkins:8080</jenkinsUrl>
+          <jenkinsTunnel>jenkins:50000</jenkinsTunnel>
+          <credentialsId>jenkins-service-account</credentialsId>
+          <containerCap>10</containerCap>
+          <retentionTimeout>5</retentionTimeout>
+        </org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud>
+      </clouds>
+      <quietPeriod>5</quietPeriod>
+      <scmCheckoutRetryCount>0</scmCheckoutRetryCount>
+      <views>
+        <hudson.model.AllView>
+          <owner class="hudson" reference="../../.."/>
+          <name>All</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+        </hudson.model.AllView>
+      </views>
+      <primaryView>All</primaryView>
+      <slaveAgentPort>50000</slaveAgentPort>
+      <label></label>
+      <nodeProperties/>
+      <globalNodeProperties/>
+      <noUsageStatistics>true</noUsageStatistics>
+    </hudson>
+  org.jenkinsci.plugins.ghprb.GhprbTrigger.xml: |-
+    <?xml version='1.0' encoding='UTF-8'?>
+    <org.jenkinsci.plugins.ghprb.GhprbTrigger_-DescriptorImpl plugin="ghprb@1.33.1">
+      <configVersion>1</configVersion>
+      <whitelistPhrase>.*add\W+to\W+whitelist.*</whitelistPhrase>
+      <okToTestPhrase>.*ok\W+to\W+test.*</okToTestPhrase>
+      <retestPhrase>.*test\W+this\W+please.*</retestPhrase>
+      <skipBuildPhrase>.*\[skip\W+ci\].*</skipBuildPhrase>
+      <cron>H/5 * * * *</cron>
+      <useComments>true</useComments>
+      <useDetailedComments>true</useDetailedComments>
+      {{if eq .Values.security "github"}}
+      <manageWebhooks>true</manageWebhooks>
+      {{else}}
+      <manageWebhooks>false</manageWebhooks>
+      {{end}}
+      <unstableAs>FAILURE</unstableAs>
+      <autoCloseFailedPullRequests>false</autoCloseFailedPullRequests>
+      <displayBuildErrorsOnDownstreamBuilds>false</displayBuildErrorsOnDownstreamBuilds>
+      <githubAuth>
+        <org.jenkinsci.plugins.ghprb.GhprbGitHubAuth>
+          <serverAPIUrl>https://api.github.com</serverAPIUrl>
+          <jenkinsUrl>https://{{.Values.jenkinsUrl}}</jenkinsUrl>
+          <credentialsId>github-access</credentialsId>
+          <id>github-access</id>
+          <description>Jenkins bot github account</description>
+          <secret>$GITHUB_ACCESS_TOKEN</secret>
+        </org.jenkinsci.plugins.ghprb.GhprbGitHubAuth>
+      </githubAuth>
+      <adminlist>{{.Values.github.admin_usernames}}</adminlist>
+      <requestForTestingPhrase>Can one of the admins verify this patch?</requestForTestingPhrase>
+      <extensions>
+        <org.jenkinsci.plugins.ghprb.extensions.comments.GhprbBuildStatus>
+          <messages>
+            <org.jenkinsci.plugins.ghprb.extensions.comments.GhprbBuildResultMessage>
+              <message>Test FAILed.</message>
+              <result>FAILURE</result>
+            </org.jenkinsci.plugins.ghprb.extensions.comments.GhprbBuildResultMessage>
+            <org.jenkinsci.plugins.ghprb.extensions.comments.GhprbBuildResultMessage>
+              <message>Test PASSed.</message>
+              <result>SUCCESS</result>
+            </org.jenkinsci.plugins.ghprb.extensions.comments.GhprbBuildResultMessage>
+          </messages>
+        </org.jenkinsci.plugins.ghprb.extensions.comments.GhprbBuildStatus>
+        <org.jenkinsci.plugins.ghprb.extensions.status.GhprbSimpleStatus>
+          <commitStatusContext></commitStatusContext>
+          <triggeredStatus></triggeredStatus>
+          <startedStatus></startedStatus>
+          <statusUrl></statusUrl>
+          <addTestResults>false</addTestResults>
+        </org.jenkinsci.plugins.ghprb.extensions.status.GhprbSimpleStatus>
+      </extensions>
+    </org.jenkinsci.plugins.ghprb.GhprbTrigger_-DescriptorImpl>
+
+  slack-publisher.yaml: |-
+    - publisher:
+        name: slack-publisher
+        publishers:
+          - raw-xml-slack-publisher:
+              slack_api_token: $SLACK_API_TOKEN
+              slack_room: "{{.Values.slackRoom}}"
+              slack_domain: "{{.Values.slackDomain}}"
+              ci_hostname: "{{.Values.jenkinsUrl}}"
+              
+  github-plugin-configuration.xml: |-
+    <?xml version='1.0' encoding='UTF-8'?>
+    <github-plugin-configuration plugin="github@1.23.1">
+      <configs>
+        <github-server-config>
+          <apiUrl>https://api.github.com</apiUrl>
+          {{if eq .Values.security "github"}}
+          <manageHooks>true</manageHooks>
+          {{else}}
+          <manageHooks>false</manageHooks>
+          {{end}}
+          <credentialsId>github-access</credentialsId>
+          <clientCacheSize>20</clientCacheSize>
+        </github-server-config>
+      </configs>
+      <hookSecretConfig>
+        <credentialsId></credentialsId>
+      </hookSecretConfig>
+    </github-plugin-configuration>
+    
+  jenkins.plugins.slack.SlackNotifier.xml: |-
+    <?xml version='1.0' encoding='UTF-8'?>
+    <jenkins.plugins.slack.SlackNotifier_-DescriptorImpl plugin="slack@2.1">
+      <teamDomain>{{.Values.slackDomain}}</teamDomain>
+      <token>${SLACK_API_TOKEN}</token>
+      <room>{{.Values.slackRoom}}</room>
+    </jenkins.plugins.slack.SlackNotifier_-DescriptorImpl>
+    
+  jenkins.model.JenkinsLocationConfiguration.xml: |-
+    <?xml version='1.0' encoding='UTF-8'?>
+    <jenkins.model.JenkinsLocationConfiguration>
+      <adminAddress>{{.Values.adminEmail}}</adminAddress>
+      <jenkinsUrl>https://{{.Values.jenkinsUrl}}/</jenkinsUrl>
+    </jenkins.model.JenkinsLocationConfiguration>
+    
+  jenkins_jobs.ini: |-
+    [job_builder]
+    ignore_cache=True
+    keep_descriptions=False
+    recursive=False
+    allow_duplicates=False
+    
+    [jenkins]
+    user=$GITHUB_USERNAME
+    password=$GITHUB_ACCESS_TOKEN
+    url=http://127.0.0.1:8080
+    query_plugins_info=True
+    
+  credentials.xml: |-
+    <?xml version='1.0' encoding='UTF-8'?>
+    <com.cloudbees.plugins.credentials.SystemCredentialsProvider plugin="credentials@2.1.9">
+      <domainCredentialsMap class="hudson.util.CopyOnWriteMap$Hash">
+        <entry>
+          <com.cloudbees.plugins.credentials.domains.Domain>
+            <specifications/>
+          </com.cloudbees.plugins.credentials.domains.Domain>
+          <java.util.concurrent.CopyOnWriteArrayList>
+            <org.csanchez.jenkins.plugins.kubernetes.ServiceAccountCredential plugin="kubernetes@0.9">
+              <scope>GLOBAL</scope>
+              <id>jenkins-service-account</id>
+              <description>jenkins service account</description>
+            </org.csanchez.jenkins.plugins.kubernetes.ServiceAccountCredential>
+            <com.cloudbees.jenkins.plugins.sshcredentials.impl.BasicSSHUserPrivateKey plugin="ssh-credentials@1.12">
+              <scope>GLOBAL</scope>
+              <id>ssh-key</id>
+              <description></description>
+              <username>ssh_key</username>
+              <passphrase>AwWB1DmD5ohRV1AnKdVv8w==</passphrase>
+              <privateKeySource class="com.cloudbees.jenkins.plugins.sshcredentials.impl.BasicSSHUserPrivateKey$FileOnMasterPrivateKeySource">
+                <privateKeyFile>/etc/secret-volume/ssh-privatekey</privateKeyFile>
+              </privateKeySource>
+            </com.cloudbees.jenkins.plugins.sshcredentials.impl.BasicSSHUserPrivateKey>
+          </java.util.concurrent.CopyOnWriteArrayList>
+        </entry>
+        <entry>
+          <com.cloudbees.plugins.credentials.domains.Domain>
+            <name>api.github.com</name>
+            <description>GitHub domain (autogenerated)</description>
+            <specifications>
+              <com.cloudbees.plugins.credentials.domains.SchemeSpecification>
+                <schemes class="linked-hash-set">
+                  <string>https</string>
+                </schemes>
+              </com.cloudbees.plugins.credentials.domains.SchemeSpecification>
+              <com.cloudbees.plugins.credentials.domains.HostnameSpecification>
+                <includes>api.github.com</includes>
+              </com.cloudbees.plugins.credentials.domains.HostnameSpecification>
+            </specifications>
+          </com.cloudbees.plugins.credentials.domains.Domain>
+          <list>
+            <org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl plugin="plain-credentials@1.3">
+              <scope>GLOBAL</scope>
+              <id>github-access</id>
+              <description></description>
+              <secret>$GITHUB_ACCESS_TOKEN</secret>
+            </org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl>
+          </list>
+        </entry>
+      </domainCredentialsMap>
+    </com.cloudbees.plugins.credentials.SystemCredentialsProvider>
+    
+  init.sh: |-
+    #!/bin/sh
+    cp -f /var/jenkins_config/config.xml /var/jenkins_home
+    sed -e "s/\$GITHUB_CLIENT_ID/"$GITHUB_CLIENT_ID"/" -e "s/\$GITHUB_CLIENT_KEY/"$GITHUB_CLIENT_KEY"/" /var/jenkins_config/config.xml >/var/jenkins_home/config.xml
+    sed -e "s/\$GITHUB_ACCESS_TOKEN/"$GITHUB_ACCESS_TOKEN"/" /var/jenkins_config/credentials.xml >/var/jenkins_home/credentials.xml
+    cp -f /var/jenkins_config/jenkins_jobs.ini /etc/jenkins_home
+    cp -f /var/jenkins_config/slack-publisher.yaml /etc/jenkins_home
+    cp -f /var/jenkins_config/jenkins.model.JenkinsLocationConfiguration.xml /var/jenkins_home
+    sed -e "s/\${SLACK_API_TOKEN}/"$SLACK_API_TOKEN"/" /var/jenkins_config/jenkins.plugins.slack.SlackNotifier.xml >/var/jenkins_home/jenkins.plugins.slack.SlackNotifier.xml
+    cp -f /var/jenkins_config/github-plugin-configuration.xml /var/jenkins_home
+    sed -e "s/\$GITHUB_ACCESS_TOKEN/"$GITHUB_ACCESS_TOKEN"/" /var/jenkins_config/org.jenkinsci.plugins.ghprb.GhprbTrigger.xml >/var/jenkins_home/org.jenkinsci.plugins.ghprb.GhprbTrigger.xml
+
+    

@@ -1,0 +1,11 @@
+name: jenkins-base
+home: https://github.com/samsung-cnct/zonar-charts
+version: 0.0.1
+description: A helm chart for running kubernetes-based jenkins ci with slaves
+sources:
+  - https://github.com/jenkinsci/jenkins
+  - https://github.com/jenkinsci/docker-jnlp-slave
+maintainers:
+  - name: John Felten
+    email: john.felten@gmail.com
+icon: https://wiki.jenkins-ci.org/download/attachments/2916393/logo.png
