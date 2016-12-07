@@ -1,0 +1,71 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: jenkins-create-jobs
+  labels:
+    heritage: {{.Release.Service | quote }}
+    release: {{.Release.Name | quote }}
+    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+  annotations:
+    "helm.sh/created": {{.Release.Time.Seconds | quote }}
+spec:
+  activeDeadlineSeconds: 600
+  completions: 1
+  parallelism: 1
+  template:
+    metadata:
+      name: jenkins-create-jobs
+      labels:
+        heritage: {{.Release.Service | quote }}
+        release: {{.Release.Name | quote }}
+        chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    spec:
+      restartPolicy: "Never"
+      containers:
+        - name: jenkins-create-jobs
+          image: "{{.Values.agent.image}}"
+          imagePullPolicy: Always
+          env:
+            - name: GITHUB_ACCESS_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: jenkins-secrets
+                  key: githubaccesstoken
+            - name: GITHUB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: jenkins-secrets
+                  key: githubusername
+            - name: SLACK_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: jenkins-secrets
+                  key: slackapitoken
+          command: 
+            - "/bin/bash"
+            - "-ec"
+            - "/var/jenkins_config/build-jenkins-jobs.sh"
+          volumeMounts:
+            - name: job-data
+              mountPath: /etc/jenkins_jobs
+            - name: jenkinshome
+              mountPath: /var/jenkins_home
+            - name: jenkins-config
+              mountPath: /var/jenkins_config
+              readOnly: false
+            - name: secret-volume
+              mountPath: /etc/secret-volume
+              readOnly: true
+      volumes:
+        - name: job-data
+          emptyDir: {}
+        - name: jenkinshome
+          emptyDir: {}
+        - name: jenkins-config
+          configMap:
+            name: jenkins-configuration
+            defaultMode: 0775
+        - name: secret-volume
+          secret:
+            secretName: jenkins-secrets
+            defaultMode: 0400

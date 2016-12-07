@@ -13,7 +13,7 @@ jobsRepo: "https://github.com/samsung-cnct/kraken-ci-jobs"
 kubernetes_cluster: "production-cluster"
 secretName: "cluster-secrets"
 secretVolume: "/etc/gke-secrets"
-security: "github"
+security: "jenkins"
 slackDomain: "samsung-cnct"
 slackRoom: "#ping-jenkins"
 
@@ -43,7 +43,7 @@ agent:
   port: 50000
 
 master:
-  master_image: "quay.io/samsung_cnct/jenkins-kubernetes-master:latest"
+  image: "quay.io/samsung_cnct/jenkins-kubernetes-master:latest"
   cpu: "200m"
   memory: "512Mi"
   port: 8080

@@ -23,9 +23,9 @@ data:
             <string>{{ . }}</string>
             {{ end }}
           </adminUserNameList>
-          <authenticatedUserReadPermission>false</authenticatedUserReadPermission>
+          <authenticatedUserReadPermission>true</authenticatedUserReadPermission>
           <useRepositoryPermissions>true</useRepositoryPermissions>
-          <authenticatedUserCreateJobPermission>false</authenticatedUserCreateJobPermission>
+          <authenticatedUserCreateJobPermission>true</authenticatedUserCreateJobPermission>
           <allowGithubWebHookPermission>true</allowGithubWebHookPermission>
           <allowCcTrayPermission>false</allowCcTrayPermission>
           <allowAnonymousReadPermission>false</allowAnonymousReadPermission>
@@ -143,6 +143,7 @@ data:
       <globalNodeProperties/>
       <noUsageStatistics>true</noUsageStatistics>
     </hudson>
+  
   org.jenkinsci.plugins.ghprb.GhprbTrigger.xml: |-
     <?xml version='1.0' encoding='UTF-8'?>
     <org.jenkinsci.plugins.ghprb.GhprbTrigger_-DescriptorImpl plugin="ghprb@1.33.1">
@@ -196,7 +197,7 @@ data:
         </org.jenkinsci.plugins.ghprb.extensions.status.GhprbSimpleStatus>
       </extensions>
     </org.jenkinsci.plugins.ghprb.GhprbTrigger_-DescriptorImpl>
-
+  
   slack-publisher.yaml: |-
     - publisher:
         name: slack-publisher
@@ -205,8 +206,8 @@ data:
               slack_api_token: $SLACK_API_TOKEN
               slack_room: "{{.Values.slackRoom}}"
               slack_domain: "{{.Values.slackDomain}}"
-              ci_hostname: "{{.Values.jenkinsUrl}}"
-              
+              ci_hostname: "{{.Values.jenkinsUrl}}"              
+  
   github-plugin-configuration.xml: |-
     <?xml version='1.0' encoding='UTF-8'?>
     <github-plugin-configuration plugin="github@1.23.1">
@@ -225,23 +226,23 @@ data:
       <hookSecretConfig>
         <credentialsId></credentialsId>
       </hookSecretConfig>
-    </github-plugin-configuration>
-    
+    </github-plugin-configuration>  
+  
   jenkins.plugins.slack.SlackNotifier.xml: |-
     <?xml version='1.0' encoding='UTF-8'?>
     <jenkins.plugins.slack.SlackNotifier_-DescriptorImpl plugin="slack@2.1">
       <teamDomain>{{.Values.slackDomain}}</teamDomain>
       <token>${SLACK_API_TOKEN}</token>
       <room>{{.Values.slackRoom}}</room>
-    </jenkins.plugins.slack.SlackNotifier_-DescriptorImpl>
-    
+    </jenkins.plugins.slack.SlackNotifier_-DescriptorImpl>   
+  
   jenkins.model.JenkinsLocationConfiguration.xml: |-
     <?xml version='1.0' encoding='UTF-8'?>
     <jenkins.model.JenkinsLocationConfiguration>
       <adminAddress>{{.Values.adminEmail}}</adminAddress>
       <jenkinsUrl>https://{{.Values.jenkinsUrl}}/</jenkinsUrl>
-    </jenkins.model.JenkinsLocationConfiguration>
-    
+    </jenkins.model.JenkinsLocationConfiguration>   
+  
   jenkins_jobs.ini: |-
     [job_builder]
     ignore_cache=True
@@ -250,11 +251,16 @@ data:
     allow_duplicates=False
     
     [jenkins]
+    {{ if eq .Values.security "github" }}
     user=$GITHUB_USERNAME
     password=$GITHUB_ACCESS_TOKEN
-    url=http://127.0.0.1:8080
-    query_plugins_info=True
-    
+    {{ else }}
+    user={{ .Values.adminUser }}
+    password={{ .Values.adminPassword }}
+    {{ end }}
+    url=http://$JENKINS_SERVICE_HOST:$JENKINS_SERVICE_PORT
+    query_plugins_info=True    
+  
   credentials.xml: |-
     <?xml version='1.0' encoding='UTF-8'?>
     <com.cloudbees.plugins.credentials.SystemCredentialsProvider plugin="credentials@2.1.9">
@@ -308,16 +314,59 @@ data:
       </domainCredentialsMap>
     </com.cloudbees.plugins.credentials.SystemCredentialsProvider>
     
-  init.sh: |-
-    #!/bin/sh
-    cp -f /var/jenkins_config/config.xml /var/jenkins_home
-    sed -e "s/\$GITHUB_CLIENT_ID/"$GITHUB_CLIENT_ID"/" -e "s/\$GITHUB_CLIENT_KEY/"$GITHUB_CLIENT_KEY"/" /var/jenkins_config/config.xml >/var/jenkins_home/config.xml
-    sed -e "s/\$GITHUB_ACCESS_TOKEN/"$GITHUB_ACCESS_TOKEN"/" /var/jenkins_config/credentials.xml >/var/jenkins_home/credentials.xml
-    cp -f /var/jenkins_config/jenkins_jobs.ini /etc/jenkins_home
-    cp -f /var/jenkins_config/slack-publisher.yaml /etc/jenkins_home
-    cp -f /var/jenkins_config/jenkins.model.JenkinsLocationConfiguration.xml /var/jenkins_home
-    sed -e "s/\${SLACK_API_TOKEN}/"$SLACK_API_TOKEN"/" /var/jenkins_config/jenkins.plugins.slack.SlackNotifier.xml >/var/jenkins_home/jenkins.plugins.slack.SlackNotifier.xml
-    cp -f /var/jenkins_config/github-plugin-configuration.xml /var/jenkins_home
-    sed -e "s/\$GITHUB_ACCESS_TOKEN/"$GITHUB_ACCESS_TOKEN"/" /var/jenkins_config/org.jenkinsci.plugins.ghprb.GhprbTrigger.xml >/var/jenkins_home/org.jenkinsci.plugins.ghprb.GhprbTrigger.xml
+  render-jenkins-config.sh: |-
+    #!/bin/bash
 
-    
+    # copy files to jenkins home folder
+    cp -f /var/jenkins_config/config.xml /var/jenkins_home
+    cp -f /var/jenkins_config/credentials.xml /var/jenkins_home
+    cp -f /var/jenkins_config/jenkins.plugins.slack.SlackNotifier.xml /var/jenkins_home
+    cp -f /var/jenkins_config/org.jenkinsci.plugins.ghprb.GhprbTrigger.xml /var/jenkins_home
+    cp -f /var/jenkins_config/jenkins.model.JenkinsLocationConfiguration.xml /var/jenkins_home
+    cp -f /var/jenkins_config/github-plugin-configuration.xml /var/jenkins_home
+
+    # create ssh config
+    mkdir -p /root/.ssh
+    cp -f /var/jenkins_config/config /root/.ssh
+
+    # replace tokens
+    sed -i -e "s/\$GITHUB_CLIENT_ID/"$GITHUB_CLIENT_ID"/" -e "s/\$GITHUB_CLIENT_KEY/"$GITHUB_CLIENT_KEY"/" /var/jenkins_home/config.xml
+    sed -i -e "s/\$GITHUB_ACCESS_TOKEN/"$GITHUB_ACCESS_TOKEN"/" /var/jenkins_home/credentials.xml
+    sed -i -e "s/\${SLACK_API_TOKEN}/"$SLACK_API_TOKEN"/" /var/jenkins_home/jenkins.plugins.slack.SlackNotifier.xml
+    sed -i -e "s/\$GITHUB_ACCESS_TOKEN/"$GITHUB_ACCESS_TOKEN"/" /var/jenkins_home/org.jenkinsci.plugins.ghprb.GhprbTrigger.xml
+
+  build-jenkins-jobs.sh: |-
+    #!/bin/bash
+    # create ssh config
+    mkdir -p /root/.ssh
+    cp -f /var/jenkins_config/config /root/.ssh
+
+    echo "LOADING JOBS";
+    {{ if eq .Values.security "github" }}
+    while [[ $(curl -s -w "%{http_code}" -u ${GITHUB_USERNAME}:${GITHUB_ACCESS_TOKEN} http://${JENKINS_SERVICE_HOST}:${JENKINS_SERVICE_PORT} -o /dev/null) != "200" ]]; do sleep 5; done
+    {{ else }}
+    while [[ $(curl -s -w "%{http_code}" http://${JENKINS_SERVICE_HOST}:${JENKINS_SERVICE_PORT} -o /dev/null) != "200" ]]; do sleep 5; done
+    {{ end }}
+    rm -rf /etc/jenkins_jobs/*
+    git clone {{.Values.jobsRepo}} /etc/jenkins_jobs
+
+    # copy and render job builder config
+    cp -f /var/jenkins_config/jenkins_jobs.ini /etc/jenkins_jobs
+    sed -i -e "s/\$GITHUB_USERNAME/"$GITHUB_USERNAME"/" \
+      -e "s/\$GITHUB_ACCESS_TOKEN/"$GITHUB_ACCESS_TOKEN"/" \
+      -e "s/\$JENKINS_SERVICE_HOST/"$JENKINS_SERVICE_HOST"/" \
+      -e "s/\$JENKINS_SERVICE_PORT/"$JENKINS_SERVICE_PORT"/" \
+      /etc/jenkins_jobs/jenkins_jobs.ini 
+
+    # render out slack publisher
+    cp -f /var/jenkins_config/slack-publisher.yaml /etc/jenkins_jobs
+    sed -i -e "s/\${SLACK_API_TOKEN}/"$SLACK_API_TOKEN"/" /etc/jenkins_jobs/slack-publisher.yaml
+
+    # run job builder
+    jenkins-jobs --conf /etc/jenkins_jobs/jenkins_jobs.ini \
+      update --recursive --exclude /etc/jenkins_jobs/excluded-on-jenkins /etc/jenkins_jobs
+
+  config: |-
+    IdentityFile            /etc/secret-volume/ssh-privatekey
+    IdentitiesOnly          yes 
+    StrictHostKeyChecking   no
