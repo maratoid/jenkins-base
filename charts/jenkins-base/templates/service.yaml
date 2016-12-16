@@ -13,11 +13,11 @@ metadata:
 spec:
   ports:
     - port: {{.Values.master.port}}
-      name: masterPort
+      name: masterport
       targetPort: {{.Values.master.port}}
     - port: {{.Values.agent.port}}
       targetPort: {{.Values.agent.port}}
-      name: agentPort
+      name: agentport
   selector:
     name: jenkins
   type: ClusterIP
