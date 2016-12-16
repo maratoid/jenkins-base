@@ -143,6 +143,45 @@ data:
       <globalNodeProperties/>
       <noUsageStatistics>true</noUsageStatistics>
     </hudson>
+
+  {{ if eq .Values.security "jenkins" }}
+  admin-config.xml: |-
+    <?xml version='1.0' encoding='UTF-8'?>
+    <user>
+      <fullName>Administrator</fullName>
+      <properties>
+        <jenkins.security.ApiTokenProperty>
+          <apiToken>{{ .Values.adminTokenEnc }}</apiToken>
+        </jenkins.security.ApiTokenProperty>
+        <com.cloudbees.plugins.credentials.UserCredentialsProvider_-UserCredentialsProperty plugin="credentials@2.1.10">
+          <domainCredentialsMap class="hudson.util.CopyOnWriteMap$Hash"/>
+        </com.cloudbees.plugins.credentials.UserCredentialsProvider_-UserCredentialsProperty>
+        <hudson.model.MyViewsProperty>
+          <views>
+            <hudson.model.AllView>
+              <owner class="hudson.model.MyViewsProperty" reference="../../.."/>
+              <name>All</name>
+              <filterExecutors>false</filterExecutors>
+              <filterQueue>false</filterQueue>
+              <properties class="hudson.model.View$PropertyList"/>
+            </hudson.model.AllView>
+          </views>
+        </hudson.model.MyViewsProperty>
+        <hudson.model.PaneStatusProperties>
+          <collapsed/>
+        </hudson.model.PaneStatusProperties>
+        <hudson.search.UserSearchProperty>
+          <insensitiveSearch>false</insensitiveSearch>
+        </hudson.search.UserSearchProperty>
+        <hudson.security.HudsonPrivateSecurityRealm_-Details>
+          <passwordHash>$SALTED_SHASUM</passwordHash>
+        </hudson.security.HudsonPrivateSecurityRealm_-Details>
+        <hudson.tasks.Mailer_-UserProperty plugin="mailer@1.18">
+          <emailAddress>{{ .Values.adminEmail }}</emailAddress>
+        </hudson.tasks.Mailer_-UserProperty>
+      </properties>
+    </user>
+  {{ end }}
   
   org.jenkinsci.plugins.ghprb.GhprbTrigger.xml: |-
     <?xml version='1.0' encoding='UTF-8'?>
@@ -254,9 +293,9 @@ data:
     {{ if eq .Values.security "github" }}
     user=$GITHUB_USERNAME
     password=$GITHUB_ACCESS_TOKEN
-    {{ else }}
+    {{ else if eq .Values.security "jenkins" }}
     user={{ .Values.adminUser }}
-    password={{ .Values.adminPassword }}
+    password=$JENKINS_API_TOKEN
     {{ end }}
     url=http://$JENKINS_SERVICE_HOST:$JENKINS_SERVICE_PORT
     query_plugins_info=True    
@@ -325,15 +364,24 @@ data:
     cp -f /var/jenkins_config/jenkins.model.JenkinsLocationConfiguration.xml /var/jenkins_home
     cp -f /var/jenkins_config/github-plugin-configuration.xml /var/jenkins_home
 
+    # create admin user folder
+    mkdir -p /var/jenkins_home/users/admin
+    cp -f /var/jenkins_config/admin-config.xml /var/jenkins_home/users/admin/config.xml
+
     # create ssh config
+    {{ if eq .Values.security "jenkins" }}
     mkdir -p /root/.ssh
     cp -f /var/jenkins_config/config /root/.ssh
+    {{ end }}
 
     # replace tokens
     sed -i -e "s/\$GITHUB_CLIENT_ID/"$GITHUB_CLIENT_ID"/" -e "s/\$GITHUB_CLIENT_KEY/"$GITHUB_CLIENT_KEY"/" /var/jenkins_home/config.xml
     sed -i -e "s/\$GITHUB_ACCESS_TOKEN/"$GITHUB_ACCESS_TOKEN"/" /var/jenkins_home/credentials.xml
     sed -i -e "s/\${SLACK_API_TOKEN}/"$SLACK_API_TOKEN"/" /var/jenkins_home/jenkins.plugins.slack.SlackNotifier.xml
     sed -i -e "s/\$GITHUB_ACCESS_TOKEN/"$GITHUB_ACCESS_TOKEN"/" /var/jenkins_home/org.jenkinsci.plugins.ghprb.GhprbTrigger.xml
+    {{ if eq .Values.security "jenkins" }}
+    sed -i -e "s/\$SALTED_SHASUM/"{{ .Values.adminUserSalt }}:$(printf "{{ .Values.adminPassword }}{ {{ .Values.adminUserSalt }} }" | tr -d ' ' | shasum -a 256 | cut -d " " -f 1)"/" /var/jenkins_home/users/admin/config.xml
+    {{ end }}
 
   build-jenkins-jobs.sh: |-
     #!/bin/bash
@@ -350,12 +398,15 @@ data:
     rm -rf /etc/jenkins_jobs/*
     git clone {{.Values.jobsRepo}} /etc/jenkins_jobs
 
+    JENKINS_API_TOKEN=$(curl --silent --basic http://{{ .Values.adminUser }}:{{ .Values.adminPassword }}@${JENKINS_SERVICE_HOST}:${JENKINS_SERVICE_PORT}/me/configure | hxselect '#apiToken' | sed 's/.*value="\([^"]*\)".*/\1\n/g')
+
     # copy and render job builder config
     cp -f /var/jenkins_config/jenkins_jobs.ini /etc/jenkins_jobs
     sed -i -e "s/\$GITHUB_USERNAME/"$GITHUB_USERNAME"/" \
       -e "s/\$GITHUB_ACCESS_TOKEN/"$GITHUB_ACCESS_TOKEN"/" \
       -e "s/\$JENKINS_SERVICE_HOST/"$JENKINS_SERVICE_HOST"/" \
       -e "s/\$JENKINS_SERVICE_PORT/"$JENKINS_SERVICE_PORT"/" \
+      -e "s/\$JENKINS_API_TOKEN/"$JENKINS_API_TOKEN"/" \
       /etc/jenkins_jobs/jenkins_jobs.ini 
 
     # render out slack publisher
