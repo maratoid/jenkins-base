@@ -27,6 +27,7 @@ spec:
         "pod.beta.kubernetes.io/init-containers": '[
           {
               "name": "copy-default-configs",
+              "imagePullPolicy": "Always",
               "image": "{{.Values.master.image}}",
               "env": [
                   {
