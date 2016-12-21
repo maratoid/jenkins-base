@@ -80,23 +80,27 @@ data:
       <viewsTabBar class="hudson.views.DefaultViewsTabBar"/>
       <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar"/>
       <clouds>
-        <org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud plugin="kubernetes@0.8">
+        <org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud plugin="kubernetes@0.10">
           <name>{{ .Values.kubernetes_cluster }}</name>
           <templates>
             <org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
-              <name>default</name>
+              <name>zonar-jnlp</name>
               <instanceCap>2147483647</instanceCap>
               <label></label>
               <nodeSelector></nodeSelector>
               <volumes>
-                <org.csanchez.jenkins.plugins.kubernetes.PodVolumes_-SecretVolume>
+                <org.csanchez.jenkins.plugins.kubernetes.volumes.SecretVolume>
                   <mountPath>{{.Values.secretVolume}}</mountPath>
                   <secretName>{{.Values.secretName}}</secretName>
-                </org.csanchez.jenkins.plugins.kubernetes.PodVolumes_-SecretVolume>
+                </org.csanchez.jenkins.plugins.kubernetes.volumes.SecretVolume>
+                <org.csanchez.jenkins.plugins.kubernetes.volumes.SecretVolume>
+                  <mountPath>/etc/secret-volume</mountPath>
+                  <secretName>jenkins-secrets</secretName>
+                </org.csanchez.jenkins.plugins.kubernetes.volumes.SecretVolume>
               </volumes>
               <containers>
                 <org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
-                  <name>default</name>
+                  <name>jnlp</name>
                   <image>{{ .Values.agent.image }}</image>
                   <privileged>false</privileged>
                   <alwaysPullImage>true</alwaysPullImage>
