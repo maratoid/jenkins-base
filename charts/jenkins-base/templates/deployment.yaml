@@ -74,6 +74,15 @@ spec:
                         "key": "service-account-id"
                       }
                     }
+                  },
+                  {
+                    "name": "GKE_HELM_SERVICE_ACCOUNT",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": "cluster-secrets",
+                        "key": "helm-service-account-id"
+                      }
+                    }
                   }
                ],
               "command": ["bash", "-ec", "/var/jenkins_config/render-jenkins-config.sh"],
