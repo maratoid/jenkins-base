@@ -13,6 +13,7 @@ jobsRepo: "https://github.com/samsung-cnct/kraken-ci-jobs"
 kubernetes_cluster: "production-cluster"
 secretName: "cluster-secrets"
 secretVolume: "/etc/gke-secrets"
+gkeProject: "sds-readiness"
 
 # github, jenkins or ldap
 security: "jenkins"

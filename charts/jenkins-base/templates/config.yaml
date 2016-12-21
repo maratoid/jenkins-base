@@ -97,12 +97,16 @@ data:
                   <mountPath>/etc/secret-volume</mountPath>
                   <secretName>jenkins-secrets</secretName>
                 </org.csanchez.jenkins.plugins.kubernetes.volumes.SecretVolume>
+                <org.csanchez.jenkins.plugins.kubernetes.volumes.HostPathVolume>
+                  <mountPath>/var/run/docker.sock</mountPath>
+                  <hostPath>/var/run/docker.sock</hostPath>
+                </org.csanchez.jenkins.plugins.kubernetes.volumes.HostPathVolume>
               </volumes>
               <containers>
                 <org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
                   <name>jnlp</name>
                   <image>{{ .Values.agent.image }}</image>
-                  <privileged>false</privileged>
+                  <privileged>true</privileged>
                   <alwaysPullImage>true</alwaysPullImage>
                   <workingDir>/home/jenkins</workingDir>
                   <command></command>
@@ -112,7 +116,28 @@ data:
                   <resourceRequestMemory>{{.Values.agent.memory}}</resourceRequestMemory>
                   <resourceLimitCpu>{{.Values.agent.cpu}}</resourceLimitCpu>
                   <resourceLimitMemory>{{.Values.agent.memory}}</resourceLimitMemory>
-                  <envVars/>
+                  <envVars>
+                    <org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
+                      <key>GKE_SERVICE_ACCOUNT</key>
+                      <value>$GKE_SERVICE_ACCOUNT</value>
+                    </org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
+                    <org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
+                      <key>GKE_PROJECT</key>
+                      <value>{{ .Values.gkeProject }}</value>
+                    </org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
+                    <org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
+                      <key>JENKINS_ADMIN_USER</key>
+                      <value>{{ .Values.adminUser }}</value>
+                    </org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
+                    <org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
+                      <key>JENKINS_ADMIN_PASSWORD</key>
+                      <value>$JENKINS_ADMIN_PASSWORD</value>
+                    </org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
+                    <org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
+                      <key>SLACK_API_TOKEN</key>
+                      <value>$SLACK_API_TOKEN</value>
+                    </org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
+                  </envVars>
                 </org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
               </containers>
               <annotations/>
@@ -155,7 +180,7 @@ data:
       <fullName>Administrator</fullName>
       <properties>
         <jenkins.security.ApiTokenProperty>
-          <apiToken>{{ .Values.adminTokenEnc }}</apiToken>
+          <apiToken></apiToken>
         </jenkins.security.ApiTokenProperty>
         <com.cloudbees.plugins.credentials.UserCredentialsProvider_-UserCredentialsProperty plugin="credentials@2.1.10">
           <domainCredentialsMap class="hudson.util.CopyOnWriteMap$Hash"/>
@@ -379,7 +404,18 @@ data:
     {{ end }}
 
     # replace tokens
-    sed -i -e "s/\$GITHUB_CLIENT_ID/"$GITHUB_CLIENT_ID"/" -e "s/\$GITHUB_CLIENT_KEY/"$GITHUB_CLIENT_KEY"/" /var/jenkins_home/config.xml
+    sed -i -e "s/\$GITHUB_CLIENT_ID/"$GITHUB_CLIENT_ID"/" \
+      -e "s/\$GITHUB_CLIENT_KEY/"$GITHUB_CLIENT_KEY"/" \
+      -e "s/\$GKE_SERVICE_ACCOUNT/"$GKE_SERVICE_ACCOUNT"/" \
+      {{- if eq .Values.security "github" -}}
+      -e "s/\$JENKINS_ADMIN_USER/"$GITHUB_USERNAME"/" \
+      -e "s/\$JENKINS_ADMIN_PASSWORD/"$GITHUB_ACCESS_TOKEN"/" \
+      {{- else if eq .Values.security "jenkins" -}}
+      -e "s/\$JENKINS_ADMIN_USER/"{{ .Values.adminUser }}"/" \
+      -e "s/\$JENKINS_ADMIN_PASSWORD/"{{ .Values.adminPassword }}"/" \
+      {{- end -}}
+      -e "s/\${SLACK_API_TOKEN}/"$SLACK_API_TOKEN"/" \
+      /var/jenkins_home/config.xml
     sed -i -e "s/\$GITHUB_ACCESS_TOKEN/"$GITHUB_ACCESS_TOKEN"/" /var/jenkins_home/credentials.xml
     sed -i -e "s/\${SLACK_API_TOKEN}/"$SLACK_API_TOKEN"/" /var/jenkins_home/jenkins.plugins.slack.SlackNotifier.xml
     sed -i -e "s/\$GITHUB_ACCESS_TOKEN/"$GITHUB_ACCESS_TOKEN"/" /var/jenkins_home/org.jenkinsci.plugins.ghprb.GhprbTrigger.xml
