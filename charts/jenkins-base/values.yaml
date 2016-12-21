@@ -66,3 +66,6 @@ secrets:
   svcAccountId: "change me"
   svcAccountKeyFile:
   svcAccountKey: "change me"
+  helmRepoSvcAccountId: "change me"
+  helmRepoSvcAccountKey: "change me"
+  helmRepoSvcAccountKeyFile:

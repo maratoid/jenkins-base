@@ -126,6 +126,10 @@ data:
                       <value>$GKE_SERVICE_ACCOUNT</value>
                     </org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
                     <org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
+                      <key>GKE_HELM_SERVICE_ACCOUNT</key>
+                      <value>$GKE_HELM_SERVICE_ACCOUNT</value>
+                    </org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
+                    <org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
                       <key>GKE_PROJECT</key>
                       <value>{{ .Values.gkeProject }}</value>
                     </org.csanchez.jenkins.plugins.kubernetes.ContainerEnvVar>
@@ -411,6 +415,7 @@ data:
     sed -i -e "s/\$GITHUB_CLIENT_ID/"$GITHUB_CLIENT_ID"/" \
       -e "s/\$GITHUB_CLIENT_KEY/"$GITHUB_CLIENT_KEY"/" \
       -e "s/\$GKE_SERVICE_ACCOUNT/"$GKE_SERVICE_ACCOUNT"/" \
+      -e "s/\$GKE_HELM_SERVICE_ACCOUNT/"$GKE_HELM_SERVICE_ACCOUNT"/" \
       {{- if eq .Values.security "github" -}}
       -e "s/\$JENKINS_ADMIN_USER/"$GITHUB_USERNAME"/" \
       -e "s/\$JENKINS_ADMIN_PASSWORD/"$GITHUB_ACCESS_TOKEN"/" \
