@@ -101,6 +101,10 @@ data:
                   <mountPath>/var/run/docker.sock</mountPath>
                   <hostPath>/var/run/docker.sock</hostPath>
                 </org.csanchez.jenkins.plugins.kubernetes.volumes.HostPathVolume>
+                <org.csanchez.jenkins.plugins.kubernetes.volumes.ConfigMapVolume>
+                  <mountPath>/var/jenkins_config</mountPath>
+                  <configMapName>jenkins-configuration</configMapName>
+                </org.csanchez.jenkins.plugins.kubernetes.volumes.ConfigMapVolume>
               </volumes>
               <containers>
                 <org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
@@ -414,7 +418,7 @@ data:
       -e "s/\$JENKINS_ADMIN_USER/"{{ .Values.adminUser }}"/" \
       -e "s/\$JENKINS_ADMIN_PASSWORD/"{{ .Values.adminPassword }}"/" \
       {{- end -}}
-      -e "s/\${SLACK_API_TOKEN}/"$SLACK_API_TOKEN"/" \
+      -e "s/\$SLACK_API_TOKEN/"$SLACK_API_TOKEN"/" \
       /var/jenkins_home/config.xml
     sed -i -e "s/\$GITHUB_ACCESS_TOKEN/"$GITHUB_ACCESS_TOKEN"/" /var/jenkins_home/credentials.xml
     sed -i -e "s/\${SLACK_API_TOKEN}/"$SLACK_API_TOKEN"/" /var/jenkins_home/jenkins.plugins.slack.SlackNotifier.xml
@@ -456,6 +460,10 @@ data:
     # run job builder
     jenkins-jobs --conf /etc/jenkins_jobs/jenkins_jobs.ini \
       update --recursive --exclude /etc/jenkins_jobs/excluded-on-jenkins /etc/jenkins_jobs
+
+    jenkins-view-builder update /etc/jenkins_jobs/views/postcommit-view.yaml  --conf /etc/jenkins_jobs/jenkins_jobs.ini
+    jenkins-view-builder update /etc/jenkins_jobs/views/PR-view.yaml  --conf /etc/jenkins_jobs/jenkins_jobs.ini
+    jenkins-view-builder update /etc/jenkins_jobs/views/images-view.yaml --conf /etc/jenkins_jobs/jenkins_jobs.ini
 
   config: |-
     IdentityFile            /etc/secret-volume/ssh-privatekey
