@@ -35,7 +35,9 @@ RUN apt-get update --fix-missing --no-install-recommends\
 COPY requirements.txt /tmp
 RUN pip install --upgrade pip \
   && pip install --requirement /tmp/requirements.txt\
-  && rm /tmp/requirements.txt
+  && rm /tmp/requirements.txt \
+  && git clone https://github.com/samsung-cnct/jenkins-job-builder-pipeline.git \
+  && cd jenkins-job-builder-pipeline && python setup.py install
 
 # Install Google Cloud SDK
 RUN export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)" \
