@@ -42,13 +42,13 @@ github:
   admin_usernames: "zonarbot jfelten countspongebob l337ch maratoid mikeln richardkaufmann Rick-Lindberg SamsungAGJenkinsBot spiffxp davidewatson cwazy1 coffeepac venezia jooyeong alejandroEsc sostheim DStorck leahnp kmansel"
 
 agent:
-  image: "quay.io/samsung_cnct/jenkins-kubernetes-slave:latest"
+  image: "gcr.io/cnct-zonar-1316/jenkins-slave:latest"
   cpu: "200m"
   memory: "256Mi"
   port: 50000
 
 master:
-  image: "quay.io/samsung_cnct/jenkins-kubernetes-master:latest"
+  image: "gcr.io/cnct-zonar-1316/jenkins-master:latest"
   cpu: "200m"
   memory: "512Mi"
   port: 8080
