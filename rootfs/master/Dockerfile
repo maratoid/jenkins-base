@@ -1,5 +1,9 @@
-FROM gcr.io/kubernetes-charts-ci/jenkins-master-k8s:v0.2.0
+FROM jenkins
 MAINTAINER Samsung CNCT <john.felten@gmail.com>
+
+ARG JENKINS_VERSION
+ENV JENKINS_VERSION ${JENKINS_VERSION:-2.40}
+
 VOLUME /var/jenkins_home
 VOLUME /etc/jenkins_jobs
 
@@ -10,7 +14,7 @@ COPY plugins.txt /usr/share/jenkins/plugins.txt
 RUN mkdir -p /usr/share/jenkins/ref/secrets/ \
     && echo "false" > /usr/share/jenkins/ref/secrets/slave-to-master-security-kill-switch \
     && rm -f /usr/share/jenkins/jenkins.war \
-    && wget http://mirrors.jenkins-ci.org/war/latest/jenkins.war -P /usr/share/jenkins/ \
+    && wget https://repo.jenkins-ci.org/public/org/jenkins-ci/main/jenkins-war/${JENKINS_VERSION}/jenkins-war-${JENKINS_VERSION}.war -P /usr/share/jenkins/jenkins.war \
     && /usr/local/bin/plugins.sh /usr/share/jenkins/plugins.txt \
     && apt-get update \
     && apt-get install -y --force-yes html-xml-utils 
