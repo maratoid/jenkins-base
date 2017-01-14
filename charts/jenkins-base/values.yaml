@@ -14,6 +14,8 @@ kubernetes_cluster: "production-cluster"
 secretName: "cluster-secrets"
 secretVolume: "/etc/gke-secrets"
 gkeProject: "sds-readiness"
+storageZone: "us-east1-b"
+seedJobToken: "seed"
 
 # github, jenkins or ldap
 security: "jenkins"
@@ -44,7 +46,7 @@ github:
 agent:
   image: "gcr.io/cnct-zonar-1316/jenkins-slave:latest"
   cpu: "200m"
-  memory: "256Mi"
+  memory: "512Mi"
   port: 50000
 
 master:

@@ -8,12 +8,12 @@ data:
       <disabledAdministrativeMonitors>
         <string>hudson.diagnosis.ReverseProxySetupMonitor</string>
       </disabledAdministrativeMonitors>
-      <version>2.19.3</version>
-      <numExecutors>0</numExecutors>
+      <version>2.40</version>
+      <numExecutors>1</numExecutors>
       <mode>NORMAL</mode>
       <useSecurity>true</useSecurity>
       {{if eq .Values.security "github"}}
-      <authorizationStrategy class="org.jenkinsci.plugins.GithubAuthorizationStrategy" plugin="github-oauth@0.22.2">
+      <authorizationStrategy class="org.jenkinsci.plugins.GithubAuthorizationStrategy" plugin="github-oauth@0.25">
         <rootACL>
           <organizationNameList class="linked-list">
             <string></string>
@@ -97,10 +97,6 @@ data:
                   <mountPath>/etc/secret-volume</mountPath>
                   <secretName>jenkins-secrets</secretName>
                 </org.csanchez.jenkins.plugins.kubernetes.volumes.SecretVolume>
-                <org.csanchez.jenkins.plugins.kubernetes.volumes.HostPathVolume>
-                  <mountPath>/var/run/docker.sock</mountPath>
-                  <hostPath>/var/run/docker.sock</hostPath>
-                </org.csanchez.jenkins.plugins.kubernetes.volumes.HostPathVolume>
                 <org.csanchez.jenkins.plugins.kubernetes.volumes.ConfigMapVolume>
                   <mountPath>/var/jenkins_config</mountPath>
                   <configMapName>jenkins-configuration</configMapName>
@@ -175,7 +171,7 @@ data:
       </views>
       <primaryView>All</primaryView>
       <slaveAgentPort>50000</slaveAgentPort>
-      <label></label>
+      <label>jobdsl</label>
       <nodeProperties/>
       <globalNodeProperties/>
       <noUsageStatistics>true</noUsageStatistics>
@@ -222,7 +218,7 @@ data:
   
   org.jenkinsci.plugins.ghprb.GhprbTrigger.xml: |-
     <?xml version='1.0' encoding='UTF-8'?>
-    <org.jenkinsci.plugins.ghprb.GhprbTrigger_-DescriptorImpl plugin="ghprb@1.33.1">
+    <org.jenkinsci.plugins.ghprb.GhprbTrigger_-DescriptorImpl plugin="ghprb@1.34.0">
       <configVersion>1</configVersion>
       <whitelistPhrase>.*add\W+to\W+whitelist.*</whitelistPhrase>
       <okToTestPhrase>.*ok\W+to\W+test.*</okToTestPhrase>
@@ -272,21 +268,11 @@ data:
           <addTestResults>false</addTestResults>
         </org.jenkinsci.plugins.ghprb.extensions.status.GhprbSimpleStatus>
       </extensions>
-    </org.jenkinsci.plugins.ghprb.GhprbTrigger_-DescriptorImpl>
-  
-  slack-publisher.yaml: |-
-    - publisher:
-        name: slack-publisher
-        publishers:
-          - raw-xml-slack-publisher:
-              slack_api_token: $SLACK_API_TOKEN
-              slack_room: "{{.Values.slackRoom}}"
-              slack_domain: "{{.Values.slackDomain}}"
-              ci_hostname: "{{.Values.jenkinsUrl}}"              
+    </org.jenkinsci.plugins.ghprb.GhprbTrigger_-DescriptorImpl>           
   
   github-plugin-configuration.xml: |-
     <?xml version='1.0' encoding='UTF-8'?>
-    <github-plugin-configuration plugin="github@1.23.1">
+    <github-plugin-configuration plugin="github@1.25.1">
       <configs>
         <github-server-config>
           <apiUrl>https://api.github.com</apiUrl>
@@ -319,24 +305,6 @@ data:
       <jenkinsUrl>https://{{.Values.jenkinsUrl}}/</jenkinsUrl>
     </jenkins.model.JenkinsLocationConfiguration>   
   
-  jenkins_jobs.ini: |-
-    [job_builder]
-    ignore_cache=True
-    keep_descriptions=False
-    recursive=False
-    allow_duplicates=False
-    
-    [jenkins]
-    {{ if eq .Values.security "github" }}
-    user=$GITHUB_USERNAME
-    password=$GITHUB_ACCESS_TOKEN
-    {{ else if eq .Values.security "jenkins" }}
-    user={{ .Values.adminUser }}
-    password=$JENKINS_API_TOKEN
-    {{ end }}
-    url=http://$JENKINS_SERVICE_HOST:$JENKINS_SERVICE_PORT
-    query_plugins_info=True    
-  
   credentials.xml: |-
     <?xml version='1.0' encoding='UTF-8'?>
     <com.cloudbees.plugins.credentials.SystemCredentialsProvider plugin="credentials@2.1.9">
@@ -346,7 +314,7 @@ data:
             <specifications/>
           </com.cloudbees.plugins.credentials.domains.Domain>
           <java.util.concurrent.CopyOnWriteArrayList>
-            <org.csanchez.jenkins.plugins.kubernetes.ServiceAccountCredential plugin="kubernetes@0.9">
+            <org.csanchez.jenkins.plugins.kubernetes.ServiceAccountCredential plugin="kubernetes@0.10">
               <scope>GLOBAL</scope>
               <id>jenkins-service-account</id>
               <description>jenkins service account</description>
@@ -434,41 +402,31 @@ data:
 
   build-jenkins-jobs.sh: |-
     #!/bin/bash
+
     # create ssh config
+    echo "Setting up ssh keys"
     mkdir -p /root/.ssh
     cp -f /var/jenkins_config/config /root/.ssh
 
-    echo "LOADING JOBS";
+    echo "Cloning job repository"
+    rm -rf /etc/jenkins_jobs/*
+    git clone {{.Values.jobsRepo}} /etc/jenkins_jobs
+
+    echo "Waiting for Jenkins to be available"
     {{ if eq .Values.security "github" }}
     while [[ $(curl -s -w "%{http_code}" -u ${GITHUB_USERNAME}:${GITHUB_ACCESS_TOKEN} http://${JENKINS_SERVICE_HOST}:${JENKINS_SERVICE_PORT} -o /dev/null) != "200" ]]; do sleep 5; done
     {{ else }}
     while [[ $(curl -s -w "%{http_code}" http://${JENKINS_SERVICE_HOST}:${JENKINS_SERVICE_PORT} -o /dev/null) != "200" ]]; do sleep 5; done
     {{ end }}
-    rm -rf /etc/jenkins_jobs/*
-    git clone {{.Values.jobsRepo}} /etc/jenkins_jobs
 
+    echo "Getting admin token"
     JENKINS_API_TOKEN=$(curl --silent --basic http://{{ .Values.adminUser }}:{{ .Values.adminPassword }}@${JENKINS_SERVICE_HOST}:${JENKINS_SERVICE_PORT}/me/configure | hxselect '#apiToken' | sed 's/.*value="\([^"]*\)".*/\1\n/g')
 
-    # copy and render job builder config
-    cp -f /var/jenkins_config/jenkins_jobs.ini /etc/jenkins_jobs
-    sed -i -e "s/\$GITHUB_USERNAME/"$GITHUB_USERNAME"/" \
-      -e "s/\$GITHUB_ACCESS_TOKEN/"$GITHUB_ACCESS_TOKEN"/" \
-      -e "s/\$JENKINS_SERVICE_HOST/"$JENKINS_SERVICE_HOST"/" \
-      -e "s/\$JENKINS_SERVICE_PORT/"$JENKINS_SERVICE_PORT"/" \
-      -e "s/\$JENKINS_API_TOKEN/"$JENKINS_API_TOKEN"/" \
-      /etc/jenkins_jobs/jenkins_jobs.ini 
+    echo "Creating seed job"
+    docker run -v /etc/jenkins_jobs:/workdir -w /workdir frekele/gradle:2.14-jdk8 ./gradlew rest -Dpattern=jobs/seed.groovy -DbaseUrl=http://localhost/api -Dusername=admin -Dpassword=zonar -Ddebug
 
-    # render out slack publisher
-    cp -f /var/jenkins_config/slack-publisher.yaml /etc/jenkins_jobs
-    sed -i -e "s/\${SLACK_API_TOKEN}/"$SLACK_API_TOKEN"/" /etc/jenkins_jobs/slack-publisher.yaml
-
-    # run job builder
-    jenkins-jobs --conf /etc/jenkins_jobs/jenkins_jobs.ini \
-      update --recursive --exclude /etc/jenkins_jobs/excluded-on-jenkins /etc/jenkins_jobs
-
-    jenkins-view-builder update /etc/jenkins_jobs/views/postcommit-view.yaml  --conf /etc/jenkins_jobs/jenkins_jobs.ini
-    jenkins-view-builder update /etc/jenkins_jobs/views/PR-view.yaml  --conf /etc/jenkins_jobs/jenkins_jobs.ini
-    jenkins-view-builder update /etc/jenkins_jobs/views/images-view.yaml --conf /etc/jenkins_jobs/jenkins_jobs.ini
+    echo "Running seed job"
+    curl -X POST http://{{ .Values.adminUser }}:${JENKINS_API_TOKEN}@${JENKINS_SERVICE_HOST}:${JENKINS_SERVICE_PORT}/job/seed/build?token={{ .Values.seedJobToken }}
 
   config: |-
     IdentityFile            /etc/secret-volume/ssh-privatekey
