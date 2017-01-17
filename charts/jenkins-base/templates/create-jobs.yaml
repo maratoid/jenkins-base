@@ -25,22 +25,6 @@ spec:
         - name: jenkins-create-jobs
           image: "{{.Values.agent.image}}"
           imagePullPolicy: Always
-          env:
-            - name: GITHUB_ACCESS_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: jenkins-secrets
-                  key: githubaccesstoken
-            - name: GITHUB_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: jenkins-secrets
-                  key: githubusername
-            - name: SLACK_API_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: jenkins-secrets
-                  key: slackapitoken
           command: 
             - "/bin/bash"
             - "-ec"
@@ -53,8 +37,8 @@ spec:
             - name: jenkins-config
               mountPath: /var/jenkins_config
               readOnly: false
-            - name: secret-volume
-              mountPath: /etc/secret-volume
+            - name: jenkins-ssh-keys
+              mountPath: /etc/jenkins-ssh-keys
               readOnly: true
       volumes:
         - name: job-data
@@ -65,7 +49,7 @@ spec:
           configMap:
             name: jenkins-configuration
             defaultMode: 0775
-        - name: secret-volume
+        - name: jenkins-ssh-keys
           secret:
-            secretName: jenkins-secrets
+            secretName: jenkins-ssh-{{.Release.Name}}
             defaultMode: 0400
