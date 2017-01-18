@@ -7,7 +7,7 @@
 adminEmail: "maratoid+samsungjenkins@gmail.com"
 adminPassword: "admin"
 adminUser: "admin"
-javaOptions: "-Xms512m -Xmx512m -Djenkins.install.runSetupWizard=false"
+javaOptions: "-Xms1024m -Xmx1024m -Djenkins.install.runSetupWizard=false"
 jenkinsUrl: "jenkins.cnct.io"
 jobsRepo: "https://github.com/samsung-cnct/kraken-ci-jobs"
 kubernetes_cluster: "production-cluster"
@@ -60,14 +60,14 @@ ldap:
 
 agent:
   image: "gcr.io/cnct-zonar-1316/jenkins-slave:latest"
-  cpu: "200m"
-  memory: "512Mi"
+  cpu: "500m"
+  memory: "1024Mi"
   port: 50000
 
 master:
   image: "gcr.io/cnct-zonar-1316/jenkins-master:latest"
-  cpu: "200m"
-  memory: "512Mi"
+  cpu: "500m"
+  memory: "1024Mi"
   port: 8080
 
 helm:

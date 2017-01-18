@@ -314,6 +314,13 @@ data:
               <description>slack api token</description>
               <secret>{{ .Values.slack.slackApiToken }}</secret>
             </org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl>
+            <com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
+              <scope>GLOBAL</scope>
+              <id>repo-scan-access</id>
+              <description></description>
+              <username>{{ .Values.github.githubUserName }}</username>
+              <password>{{ .Values.github.githubAccessToken }}</password>
+            </com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl>
           </java.util.concurrent.CopyOnWriteArrayList>
         </entry>
         <entry>
