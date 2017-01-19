@@ -29,62 +29,6 @@ spec:
               "name": "copy-default-configs",
               "imagePullPolicy": "Always",
               "image": "{{.Values.master.image}}",
-              "env": [
-                  {
-                    "name": "SLACK_API_TOKEN",
-                    "valueFrom": {
-                      "secretKeyRef": {
-                        "name": "jenkins-secrets",
-                        "key": "slackapitoken"
-                      }
-                    }
-                  },
-                  {
-                    "name": "GITHUB_CLIENT_ID",
-                    "valueFrom": {
-                      "secretKeyRef": {
-                        "name": "jenkins-secrets",
-                        "key": "githubclientid"
-                      }
-                    }
-                  },
-                  {
-                    "name": "GITHUB_CLIENT_KEY",
-                    "valueFrom": {
-                      "secretKeyRef": {
-                        "name": "jenkins-secrets",
-                        "key": "githubclientkey"
-                      }
-                    }
-                  },
-                  {
-                    "name": "GITHUB_ACCESS_TOKEN",
-                    "valueFrom": {
-                      "secretKeyRef": {
-                        "name": "jenkins-secrets",
-                        "key": "githubaccesstoken"
-                      }
-                    }
-                  },
-                  {
-                    "name": "GKE_SERVICE_ACCOUNT",
-                    "valueFrom": {
-                      "secretKeyRef": {
-                        "name": "cluster-secrets",
-                        "key": "service-account-id"
-                      }
-                    }
-                  },
-                  {
-                    "name": "GKE_HELM_SERVICE_ACCOUNT",
-                    "valueFrom": {
-                      "secretKeyRef": {
-                        "name": "cluster-secrets",
-                        "key": "helm-service-account-id"
-                      }
-                    }
-                  }
-               ],
               "command": ["bash", "-ec", "/var/jenkins_config/render-jenkins-config.sh"],
               "volumeMounts": [
                   {
@@ -128,31 +72,6 @@ spec:
               value: "{{.Values.jenkinsUrl}}"
             - name: VIRTUAL_PORT
               value: "{{.Values.master.port}}"
-            - name: SLACK_API_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: jenkins-secrets
-                  key: slackapitoken
-            - name: GITHUB_CLIENT_ID
-              valueFrom:
-                secretKeyRef:
-                  name: jenkins-secrets
-                  key: githubclientid
-            - name: GITHUB_CLIENT_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: jenkins-secrets
-                  key: githubclientkey
-            - name: GITHUB_ACCESS_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: jenkins-secrets
-                  key: githubaccesstoken
-            - name: GITHUB_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: jenkins-secrets
-                  key: githubusername
           ports:
             - containerPort: {{.Values.master.port}}
               name: http
@@ -182,12 +101,12 @@ spec:
               name: jenkins-jobs
               readOnly: false
             -
-              mountPath: /etc/secret-volume
-              name: secret-volume
+              mountPath: /etc/jenkins-ssh-keys
+              name: jenkins-ssh-keys
               readOnly: true
             -
-              mountPath: /etc/gke-secrets
-              name: gke-secrets
+              mountPath: /etc/service-account-keys
+              name: service-account-keys
               readOnly: true
       volumes:
       - name: jenkins-config
@@ -196,13 +115,13 @@ spec:
           defaultMode: 0775
       - name: jenkins-home
         emptyDir: {}
-      - name: secret-volume
+      - name: jenkins-ssh-keys
         secret:
-          secretName: jenkins-secrets
+          secretName: jenkins-ssh-{{.Release.Name}}
           defaultMode: 0400
-      - name: gke-secrets
+      - name: service-account-keys
         secret: 
-            secretName: cluster-secrets
+            secretName: "jenkins-gke-{{.Release.Name}}"
       {{- if .Values.persistence.enabled }}
       - name: jenkins-jobs
         persistentVolumeClaim:

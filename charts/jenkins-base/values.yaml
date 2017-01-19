@@ -7,20 +7,40 @@
 adminEmail: "maratoid+samsungjenkins@gmail.com"
 adminPassword: "admin"
 adminUser: "admin"
-javaOptions: "-Xms512m -Xmx512m -Djenkins.install.runSetupWizard=false"
+javaOptions: "-Xms1024m -Xmx1024m -Djenkins.install.runSetupWizard=false"
 jenkinsUrl: "jenkins.cnct.io"
 jobsRepo: "https://github.com/samsung-cnct/kraken-ci-jobs"
 kubernetes_cluster: "production-cluster"
-secretName: "cluster-secrets"
-secretVolume: "/etc/gke-secrets"
-gkeProject: "sds-readiness"
+storageZone: "us-east1-b"
+seedJobToken: "seed"
 
 # github, jenkins or ldap
 security: "jenkins"
 adminUserSalt: "change me if using jenkins security"
 
-slackDomain: "samsung-cnct"
-slackRoom: "#ping-jenkins"
+slack:
+  slackDomain: "samsung-cnct"
+  slackRoom: "#ping-jenkins"
+  slackApiToken: "change me"
+
+github:
+  githubClientId: "change me"
+  githubAccessToken: "change me"
+  githubUserName: "change me"
+  githubClientKey: "change me"
+  admin_usernames: "change me"
+
+gke:
+  gkeProject: "change me"
+  svcAccountId: "change me"
+  svcAccountKeyFile:
+  svcAccountKey: "change me"
+
+ssh:
+  sshPrivateKeyFile:
+  sshPrivateKey: "change me"
+  sshPublicKeyFile:
+  sshPublicKey: "change me"
 
 persistence:
   component: "data_volume"
@@ -38,34 +58,19 @@ ldap:
   managerDN:
   managerDNPassword: "change me"
 
-github:
-  admin_usernames: "zonarbot jfelten countspongebob l337ch maratoid mikeln richardkaufmann Rick-Lindberg SamsungAGJenkinsBot spiffxp davidewatson cwazy1 coffeepac venezia jooyeong alejandroEsc sostheim DStorck leahnp kmansel"
-
 agent:
   image: "gcr.io/cnct-zonar-1316/jenkins-slave:latest"
   cpu: "200m"
-  memory: "256Mi"
+  memory: "1024Mi"
   port: 50000
 
 master:
   image: "gcr.io/cnct-zonar-1316/jenkins-master:latest"
   cpu: "200m"
-  memory: "512Mi"
+  memory: "1024Mi"
   port: 8080
 
-secrets:
-  slackApiToken: "change me"
-  githubClientId: "change me"
-  githubAccessToken: "change me"
-  githubUserName: "change me"
-  githubClientKey: "change me"
-  sshPrivateKeyFile:
-  sshPrivateKey: "change me"
-  sshPublicKeyFile:
-  sshPublicKey: "change me"
+helm:
   svcAccountId: "change me"
-  svcAccountKeyFile:
   svcAccountKey: "change me"
-  helmRepoSvcAccountId: "change me"
-  helmRepoSvcAccountKey: "change me"
-  helmRepoSvcAccountKeyFile:
+  svcAccountKeyFile:
