@@ -266,7 +266,24 @@ data:
       <hookSecretConfig>
         <credentialsId></credentialsId>
       </hookSecretConfig>
-    </github-plugin-configuration>  
+    </github-plugin-configuration> 
+
+  scriptApproval.xml: |-
+    <?xml version='1.0' encoding='UTF-8'?>
+    <scriptApproval plugin="script-security@1.25">
+      <approvedScriptHashes/>
+      <approvedSignatures>
+        <string>method groovy.json.JsonSlurperClassic parseText java.lang.String</string>
+        <string>new groovy.json.JsonSlurperClassic</string>
+        <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods invokeMethod java.lang.Object java.lang.String java.lang.Object</string>
+        <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods println java.lang.Object java.lang.Object</string>
+      </approvedSignatures>
+      <aclApprovedSignatures/>
+      <approvedClasspathEntries/>
+      <pendingScripts/>
+      <pendingSignatures/>
+      <pendingClasspathEntries/>
+    </scriptApproval> 
   
   jenkins.plugins.slack.SlackNotifier.xml: |-
     <?xml version='1.0' encoding='UTF-8'?>
@@ -360,6 +377,7 @@ data:
     cp -f /var/jenkins_config/org.jenkinsci.plugins.ghprb.GhprbTrigger.xml /var/jenkins_home
     cp -f /var/jenkins_config/jenkins.model.JenkinsLocationConfiguration.xml /var/jenkins_home
     cp -f /var/jenkins_config/github-plugin-configuration.xml /var/jenkins_home
+    cp -f /var/jenkins_config/scriptApproval.xml /var/jenkins_home
 
     # create admin user folder
     mkdir -p /var/jenkins_home/users/admin
