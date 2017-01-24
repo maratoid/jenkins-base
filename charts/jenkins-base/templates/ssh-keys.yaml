@@ -6,12 +6,12 @@ metadata:
     "helm.sh/hook": pre-install
 data:
 {{if .Values.ssh.sshPrivateKeyFile}}
-  ssh-privatekey: {{ include .Values.ssh.sshPrivateKeyFile | b64enc | replace "\n" "" | quote }}
+  ssh-privatekey: {{ include .Values.ssh.sshPrivateKeyFile . | b64enc | replace "\n" "" | quote }}
 {{else}}
   ssh-privatekey: {{ .Values.ssh.sshPrivateKey | b64enc | replace "\n" "" | quote }}
 {{end}}
 {{if .Values.ssh.sshPublicKeyFile}}
-  ssh-publickey: {{ include .Values.ssh.sshPublicKeyFile | b64enc | replace "\n" "" | quote }}
+  ssh-publickey: {{ include .Values.ssh.sshPublicKeyFile . | b64enc | replace "\n" "" | quote }}
 {{else}}
   ssh-publickey: {{ .Values.ssh.sshPublicKey | b64enc | replace "\n" "" | quote }}
 {{end}}
