@@ -277,6 +277,8 @@ data:
         <string>new groovy.json.JsonSlurperClassic</string>
         <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods invokeMethod java.lang.Object java.lang.String java.lang.Object</string>
         <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods println java.lang.Object java.lang.Object</string>
+        <string>method groovy.json.JsonSlurperClassic parseText java.lang.String</string>
+        <string>method org.yaml.snakeyaml.Yaml load java.lang.String</string>
       </approvedSignatures>
       <aclApprovedSignatures/>
       <approvedClasspathEntries/>
