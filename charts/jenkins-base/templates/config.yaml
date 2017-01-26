@@ -81,51 +81,8 @@ data:
       <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar"/>
       <clouds>
         <org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud plugin="kubernetes@0.10">
-          <name>{{ .Values.kubernetes_cluster }}</name>
-          <templates>
-            <org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
-              <name>zonar-jnlp</name>
-              <instanceCap>2147483647</instanceCap>
-              <label></label>
-              <nodeSelector></nodeSelector>
-              <volumes>
-                <org.csanchez.jenkins.plugins.kubernetes.volumes.SecretVolume>
-                  <mountPath>/etc/service-account-keys</mountPath>
-                  <secretName>jenkins-gke-{{.Release.Name}}</secretName>
-                </org.csanchez.jenkins.plugins.kubernetes.volumes.SecretVolume>
-                <org.csanchez.jenkins.plugins.kubernetes.volumes.SecretVolume>
-                  <mountPath>/etc/helm-account-keys</mountPath>
-                  <secretName>jenkins-helm-{{.Release.Name}}</secretName>
-                </org.csanchez.jenkins.plugins.kubernetes.volumes.SecretVolume>
-                <org.csanchez.jenkins.plugins.kubernetes.volumes.SecretVolume>
-                  <mountPath>/etc/jenkins-ssh-keys</mountPath>
-                  <secretName>jenkins-ssh-{{.Release.Name}}</secretName>
-                </org.csanchez.jenkins.plugins.kubernetes.volumes.SecretVolume>
-                <org.csanchez.jenkins.plugins.kubernetes.volumes.ConfigMapVolume>
-                  <mountPath>/var/jenkins_config</mountPath>
-                  <configMapName>jenkins-configuration</configMapName>
-                </org.csanchez.jenkins.plugins.kubernetes.volumes.ConfigMapVolume>
-              </volumes>
-              <containers>
-                <org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
-                  <name>jnlp</name>
-                  <image>{{ .Values.agent.image }}</image>
-                  <privileged>true</privileged>
-                  <alwaysPullImage>true</alwaysPullImage>
-                  <workingDir>/home/jenkins</workingDir>
-                  <command></command>
-                  <args>${computer.jnlpmac} ${computer.name}</args>
-                  <ttyEnabled>false</ttyEnabled>
-                  <resourceRequestCpu>{{.Values.agent.cpu}}</resourceRequestCpu>
-                  <resourceRequestMemory>{{.Values.agent.memory}}</resourceRequestMemory>
-                  <resourceLimitCpu>{{.Values.agent.cpu}}</resourceLimitCpu>
-                  <resourceLimitMemory>{{.Values.agent.memory}}</resourceLimitMemory>
-                </org.csanchez.jenkins.plugins.kubernetes.ContainerTemplate>
-              </containers>
-              <annotations/>
-              <imagePullSecrets/>
-            </org.csanchez.jenkins.plugins.kubernetes.PodTemplate>
-          </templates>
+          <name>kubernetes</name>
+          <templates/>
           <serverUrl>https://kubernetes.default.svc.cluster.local</serverUrl>
           <skipTlsVerify>true</skipTlsVerify>
           <namespace>default</namespace>
