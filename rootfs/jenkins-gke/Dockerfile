@@ -2,7 +2,8 @@ FROM gcr.io/google_containers/ubuntu-slim:0.3
 
 ENV GOOGLE_CLOUD_SDK_VERSION=117.0.0 \
   KUBERNETES_VERSION=v1.5.2 \
-  HELM_VERSION=v2.1.3 
+  HELM_VERSION=v2.1.3 \
+  DOCKER_API_VERSION=1.23
 
 RUN apt-get update -qq && apt-get install -qqy \
     apt-transport-https \
