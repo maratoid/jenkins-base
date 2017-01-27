@@ -1,7 +1,7 @@
 FROM gcr.io/google_containers/ubuntu-slim:0.3
 
 ENV GOOGLE_CLOUD_SDK_VERSION=117.0.0 \
-  KUBERNETES_VERSION=v1.5.1 \
+  KUBERNETES_VERSION=v1.5.2 \
   HELM_VERSION=v2.1.3 
 
 RUN apt-get update -qq && apt-get install -qqy \
@@ -28,3 +28,6 @@ RUN wget http://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}-linu
   && tar xzf ./helm-${HELM_VERSION}-linux-amd64.tar.gz \
   && mv linux-amd64/helm /usr/local/bin \
   && rm -rf helm-${HELM_VERSION}-linux-amd64.tar.gz linux-amd64
+
+# Install Docker from Docker Inc. repositories.   
+ RUN curl -sSL https://get.docker.com/ | sh
