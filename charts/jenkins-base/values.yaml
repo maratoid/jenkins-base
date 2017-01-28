@@ -10,8 +10,6 @@ adminUser: "admin"
 javaOptions: "-Xms1024m -Xmx1024m -Djenkins.install.runSetupWizard=false"
 jenkinsUrl: "jenkins.cnct.io"
 jobsRepo: "https://github.com/samsung-cnct/kraken-ci-jobs"
-kubernetes_cluster: "production-cluster"
-storageZone: "us-east1-b"
 seedJobToken: "seed"
 
 # github, jenkins or ldap
@@ -31,6 +29,8 @@ github:
   admin_usernames: "change me"
 
 gke:
+  clusterName: "production-cluster"
+  clusterPrimaryZone: "us-east1-b"
   gkeProject: "change me"
   svcAccountId: "change me"
   svcAccountKeyFile:

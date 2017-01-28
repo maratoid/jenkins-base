@@ -116,13 +116,19 @@ data:
               <default>
                 <comparator class="hudson.util.CaseInsensitiveComparator"/>
               </default>
-              <int>3</int>
+              <int>6</int>
               <string>HELM_GKE_SERVICE_ACCOUNT</string>
-              <string>{{ .Values.gke.svcAccountId }}</string>
-              <string>MAIN_GKE_SERVICE_ACCOUNT</string>
               <string>{{ .Values.helm.svcAccountId }}</string>
+              <string>MAIN_GKE_SERVICE_ACCOUNT</string>
+              <string>{{ .Values.gke.svcAccountId }}</string>
               <string>UNIQUE_JENKINS_ID</string>
               <string>{{ .Release.Name }}</string>
+              <string>GKE_CLUSTER_NAME</string>
+              <string>{{ .Values.gke.clusterName }}</string>
+              <string>GKE_PRIMARY_ZONE</string>
+              <string>{{ .Values.gke.clusterPrimaryZone }}</string>
+              <string>GKE_PROJECT_NAME</string>
+              <string>{{ .Values.gke.gkeProject }}</string>
             </tree-map>
           </envVars>
         </hudson.slaves.EnvironmentVariablesNodeProperty>
