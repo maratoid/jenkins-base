@@ -407,9 +407,9 @@ data:
 
     echo "Creating seed job"
     {{ if eq .Values.security "github" }}
-    docker run -v /etc/jenkins_jobs:/workdir -w /workdir frekele/gradle:2.14-jdk8 ./gradlew rest -Dpattern=jobs/seed.groovy -DbaseUrl=http://localhost/api -Dusername={{ .Values.github.githubUserName }} -Dpassword={{ .Values.github.githubAccessToken }}
+    /etc/jenkins_jobs/gradlew rest -Dpattern=jobs/seed.groovy -DbaseUrl=http://${JENKINS_SERVICE_HOST}:${JENKINS_SERVICE_PORT}/api -Dusername={{ .Values.github.githubUserName }} -Dpassword={{ .Values.github.githubAccessToken }}
     {{ else }}
-    docker run -v /etc/jenkins_jobs:/workdir -w /workdir frekele/gradle:2.14-jdk8 ./gradlew rest -Dpattern=jobs/seed.groovy -DbaseUrl=http://localhost/api -Dusername={{ .Values.adminUser }} -Dpassword={{ .Values.adminPassword }}
+    /etc/jenkins_jobs/gradlew rest -Dpattern=jobs/seed.groovy -DbaseUrl=http://${JENKINS_SERVICE_HOST}:${JENKINS_SERVICE_PORT}/api -Dusername={{ .Values.adminUser }} -Dpassword={{ .Values.adminPassword }}
     {{ end }}
 
     echo "Running seed job"
