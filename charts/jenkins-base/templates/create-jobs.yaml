@@ -40,8 +40,6 @@ spec:
             - name: jenkins-ssh-keys
               mountPath: /etc/jenkins-ssh-keys
               readOnly: true
-            - name: docker-socket
-              mountPath: /var/run/docker.sock
       volumes:
         - name: job-data
           emptyDir: {}
@@ -55,6 +53,3 @@ spec:
           secret:
             secretName: jenkins-ssh-{{.Release.Name}}
             defaultMode: 0400
-        - name: docker-socket
-          hostPath:
-            path: /var/run/docker.sock
