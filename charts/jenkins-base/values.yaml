@@ -59,13 +59,13 @@ ldap:
   managerDNPassword: "change me"
 
 agent:
-  image: "gcr.io/cnct-zonar-1316/jenkins-slave:latest"
+  image: "set me"
   cpu: "200m"
   memory: "1024Mi"
   port: 50000
 
 master:
-  image: "gcr.io/cnct-zonar-1316/jenkins-master:latest"
+  image: "set me"
   cpu: "200m"
   memory: "1024Mi"
   port: 8080
