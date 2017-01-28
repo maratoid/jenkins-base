@@ -104,10 +104,6 @@ spec:
               mountPath: /etc/jenkins-ssh-keys
               name: jenkins-ssh-keys
               readOnly: true
-            -
-              mountPath: /etc/service-account-keys
-              name: service-account-keys
-              readOnly: true
       volumes:
       - name: jenkins-config
         configMap:
@@ -119,9 +115,6 @@ spec:
         secret:
           secretName: jenkins-ssh-{{.Release.Name}}
           defaultMode: 0400
-      - name: service-account-keys
-        secret: 
-            secretName: "jenkins-gke-{{.Release.Name}}"
       {{- if .Values.persistence.enabled }}
       - name: jenkins-jobs
         persistentVolumeClaim:

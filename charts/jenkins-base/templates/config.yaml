@@ -108,7 +108,25 @@ data:
       <slaveAgentPort>50000</slaveAgentPort>
       <label>jobdsl</label>
       <nodeProperties/>
-      <globalNodeProperties/>
+      <globalNodeProperties>
+        <hudson.slaves.EnvironmentVariablesNodeProperty>
+          <envVars serialization="custom">
+            <unserializable-parents/>
+            <tree-map>
+              <default>
+                <comparator class="hudson.util.CaseInsensitiveComparator"/>
+              </default>
+              <int>3</int>
+              <string>HELM_GKE_SERVICE_ACCOUNT</string>
+              <string>{{ .Values.gke.svcAccountId }}</string>
+              <string>MAIN_GKE_SERVICE_ACCOUNT</string>
+              <string>{{ .Values.helm.svcAccountId }}</string>
+              <string>UNIQUE_JENKINS_ID</string>
+              <string>{{ .Release.Name }}</string>
+            </tree-map>
+          </envVars>
+        </hudson.slaves.EnvironmentVariablesNodeProperty>
+      </globalNodeProperties>
       <noUsageStatistics>true</noUsageStatistics>
     </hudson>
 
