@@ -89,7 +89,7 @@ data:
           <jenkinsUrl>http://jenkins:8080</jenkinsUrl>
           <jenkinsTunnel>jenkins:50000</jenkinsTunnel>
           <credentialsId>jenkins-service-account</credentialsId>
-          <containerCap>10</containerCap>
+          <containerCap>50</containerCap>
           <retentionTimeout>5</retentionTimeout>
         </org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud>
       </clouds>
