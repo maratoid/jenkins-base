@@ -406,6 +406,7 @@ data:
     {{ end }}
 
     echo "Creating seed job"
+    cd /etc/jenkins_jobs
     {{ if eq .Values.security "github" }}
     /etc/jenkins_jobs/gradlew rest -Dpattern=jobs/seed.groovy -DbaseUrl=http://${JENKINS_SERVICE_HOST}:${JENKINS_SERVICE_PORT}/api -Dusername={{ .Values.github.githubUserName }} -Dpassword={{ .Values.github.githubAccessToken }}
     {{ else }}
