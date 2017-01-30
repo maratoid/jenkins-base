@@ -11,6 +11,7 @@ RUN apt-get update -qq && apt-get install -qqy \
     bash \
     curl \
     git \
+    make \
     dnsutils \
     lsb-release \
     wget \
