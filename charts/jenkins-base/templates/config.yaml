@@ -258,6 +258,7 @@ data:
         <string>new groovy.json.JsonSlurperClassic</string>
         <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods invokeMethod java.lang.Object java.lang.String java.lang.Object</string>
         <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods println java.lang.Object java.lang.Object</string>
+        <string>staticMethod org.codehaus.groovy.runtime.ScriptBytecodeAdapter createRange java.lang.Object java.lang.Object boolean</string>
         <string>method groovy.json.JsonSlurperClassic parseText java.lang.String</string>
         <string>method org.yaml.snakeyaml.Yaml load java.lang.String</string>
         <string>new java.util.HashMap java.util.Map</string>
