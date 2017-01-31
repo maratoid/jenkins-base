@@ -263,6 +263,7 @@ data:
         <string>method org.yaml.snakeyaml.Yaml load java.lang.String</string>
         <string>new java.util.HashMap java.util.Map</string>
         <string>new org.yaml.snakeyaml.Yaml</string>
+        <string>staticField hudson.model.Result SUCCESS</string>
       </approvedSignatures>
       <aclApprovedSignatures/>
       <approvedClasspathEntries/>
