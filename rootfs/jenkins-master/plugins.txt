@@ -100,3 +100,4 @@ workflow-scm-step:2.3
 workflow-step-api:2.7
 workflow-support:2.12
 ws-cleanup:0.32
+htmlpublisher:1.12
