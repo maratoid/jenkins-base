@@ -85,6 +85,7 @@ subversion:2.7.1
 timestamper:1.8.7
 token-macro:2.0
 translation:1.15
+view-job-filters:1.27
 vsphere-cloud:2.15
 windows-slaves:1.2
 workflow-aggregator:2.4
