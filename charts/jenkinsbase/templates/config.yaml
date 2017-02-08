@@ -371,7 +371,29 @@ data:
         </entry>
       </domainCredentialsMap>
     </com.cloudbees.plugins.credentials.SystemCredentialsProvider>
-    
+  org.jenkinsci.plugins.workflow.libs.GlobalLibraries.xml:
+    <?xml version='1.0' encoding='UTF-8'?>
+    <org.jenkinsci.plugins.workflow.libs.GlobalLibraries plugin="workflow-cps-global-lib@2.5">
+      <libraries>
+        <org.jenkinsci.plugins.workflow.libs.LibraryConfiguration>
+          <name>pipeline</name>
+          <retriever class="org.jenkinsci.plugins.workflow.libs.SCMSourceRetriever">
+            <scm class="jenkins.plugins.git.GitSCMSource" plugin="git@3.0.4">
+              <id>1f833e15-b6ca-4395-99a6-02900acceaa9</id>
+              <remote>https://github.com/samsung-cnct/zonar-pipeline-library</remote>
+              <credentialsId>repo-scan-access</credentialsId>
+              <includes>*</includes>
+              <excludes></excludes>
+              <ignoreOnPushNotifications>false</ignoreOnPushNotifications>
+            </scm>
+          </retriever>
+          <defaultVersion>master</defaultVersion>
+          <implicit>false</implicit>
+          <allowVersionOverride>true</allowVersionOverride>
+        </org.jenkinsci.plugins.workflow.libs.LibraryConfiguration>
+      </libraries>
+    </org.jenkinsci.plugins.workflow.libs.GlobalLibraries>
+     
   render-jenkins-config.sh: |-
     #!/bin/bash
 
