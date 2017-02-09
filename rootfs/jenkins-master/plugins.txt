@@ -19,6 +19,7 @@ display-url-api:1.1.1
 docker-commons:1.6
 docker-custom-build-environment:1.6.5
 docker-workflow:1.9.1
+dynamicparameter:0.2.0
 durable-task:1.13
 envinject:1.93.1
 external-monitor-job:1.7
