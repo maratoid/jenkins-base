@@ -250,50 +250,219 @@ data:
     </github-plugin-configuration> 
 
   scriptApproval.xml: |-
-    <?xml version='1.0' encoding='UTF-8'?>
-    <scriptApproval plugin="script-security@1.25">
-      <approvedScriptHashes/>
-      <approvedSignatures>
-        <string>method groovy.json.JsonSlurperClassic parseText java.lang.String</string>
-        <string>new groovy.json.JsonSlurperClassic</string>
-        <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods invokeMethod java.lang.Object java.lang.String java.lang.Object</string>
-        <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods println java.lang.Object java.lang.Object</string>
-        <string>staticMethod org.codehaus.groovy.runtime.ScriptBytecodeAdapter createRange java.lang.Object java.lang.Object boolean</string>
-        <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods getProperties java.lang.Object</string>
-        <string>staticMethod jenkins.model.Jenkins getInstance</string>
-        <string>method groovy.json.JsonSlurperClassic parseText java.lang.String</string>
-        <string>method org.yaml.snakeyaml.Yaml load java.lang.String</string>
-        <string>method org.jenkinsci.plugins.workflow.support.steps.build.RunWrapper getRawBuild</string>
-        <string>method hudson.model.Run getCause java.lang.Class</string>
-        <string>method jenkins.model.Jenkins getItemByFullName java.lang.String</string>
-        <string>method hudson.model.Job getLastBuild</string>
-        <string>method hudson.model.Actionable getAction java.lang.Class</string>
-        <string>method org.jenkinsci.plugins.workflow.support.actions.EnvironmentAction getEnvironment</string>
-        <string>method org.yaml.snakeyaml.DumperOptions setPrettyFlow boolean</string>
-        <string>method org.yaml.snakeyaml.Yaml dump java.lang.Object</string>
-        <string>method groovy.lang.GroovyObject getProperty java.lang.String</string>
-        <string>method groovy.lang.GroovyObject setProperty java.lang.String java.lang.Object</string>
-        <string>new java.util.HashMap java.util.Map</string>
-        <string>new org.yaml.snakeyaml.Yaml</string>
-        <string>new org.yaml.snakeyaml.DumperOptions</string>
-        <string>new org.yaml.snakeyaml.Yaml org.yaml.snakeyaml.DumperOptions</string>
-        <string>new java.lang.Exception java.lang.String</string>
-        <string>new java.util.ArrayList java.util.Collection</string>
-        <string>staticField hudson.model.Result SUCCESS</string>
-        <string>staticField org.yaml.snakeyaml.DumperOptions$FlowStyle BLOCK</string>
-        <string>method org.yaml.snakeyaml.DumperOptions setDefaultFlowStyle org.yaml.snakeyaml.DumperOptions$FlowStyle</string>
-        <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods inject java.util.Map java.lang.Object groovy.lang.Closure</string>
-        <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods leftShift java.util.Map java.util.Map</string>
-        <string>staticMethod java.util.regex.Pattern quote java.lang.String</string>
-        <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods addAll java.util.Collection java.lang.Object[]</string>
-        <string>new hudson.EnvVars java.lang.String[]</string>
-      </approvedSignatures>
-      <aclApprovedSignatures/>
-      <approvedClasspathEntries/>
-      <pendingScripts/>
-      <pendingSignatures/>
-      <pendingClasspathEntries/>
-    </scriptApproval> 
+      <?xml version='1.0' encoding='UTF-8'?>
+      <scriptApproval plugin="script-security@1.25">
+        <approvedScriptHashes>
+          <string>017d0db438428731cd600b6ebda805065433520f</string>
+          <string>01d57f368eca45acbf980f4b69e219ef1d1bde0c</string>
+          <string>0cb70d32e4aa94ab8249fadae9e710b31cc59361</string>
+          <string>0eb24e09d4e5901833f03f3bc8909d332cee9708</string>
+          <string>13433cbcfa42c6b09fcd8e6570df977b9dde5bcd</string>
+          <string>1794efe09fabc211f75ef7b64784ee0038f916bc</string>
+          <string>17b257d8df3d1797352698a406b2d0fc28bdc790</string>
+          <string>1b874ce6678bebb1cafe0d56c707182224ba362c</string>
+          <string>1c0f95fdc9bfdb1826d4c1c2d2f12a1f478aba72</string>
+          <string>1cd96120a39ef30af5da6002063c16b2a1a64b83</string>
+          <string>1ce96f4bb7b7d7dcf1c8734dc83c68490d27db78</string>
+          <string>1f6fb3dbfb4a7ef50ee47f3625e7b21e9a33319d</string>
+          <string>25ea40f1d26b6edba175728bf2634f17cc7d25e4</string>
+          <string>2723bf803f085a0fbad30a78a7a6fee612b0e7bd</string>
+          <string>27a760e90d58357a9d66829292e9ef3dd1ac54fa</string>
+          <string>27b7c103170f08287f98933d652c4409f05b4d24</string>
+          <string>2afe2e72f8df2da83a116adfa1aca97396095de1</string>
+          <string>2d18dbde5d2bbff9e42378931530be4326e6b456</string>
+          <string>2d6b4d8c989ae7bbccc4129fb03056d32dd036ee</string>
+          <string>2e938792d767b652c2e60066bdfb40d673897efd</string>
+          <string>3068d9d1286d6f9f41767cead90b7f4692b46dd0</string>
+          <string>32dd00c9c413c072381bdd8e6ae98505576b23a0</string>
+          <string>3341926dd76663cb67180c100c82b7a71f28f170</string>
+          <string>347a9a69f16a90c0df13c38a27b63810d12d90c8</string>
+          <string>3511306a34b413ea075ccbb94f55b7916ea3e24f</string>
+          <string>35b6c1de32d64a875ea01d8ec2b59831f43c1da2</string>
+          <string>37bf8d1fa781f6ae3e412df7cb1907ab783e00d1</string>
+          <string>387836f74fd5047f7732603a4b5cf2749525160a</string>
+          <string>392c6527327a4b5388824ee4dcfb8289477f2d52</string>
+          <string>3be20241730cc9d3c9691a1aa95322cea98e1d3c</string>
+          <string>3cc9fb254c41578e15b2096a7ec9275658ef9a72</string>
+          <string>3d6dbb2c7c2b30b5f8cd54dedb12a3eb746d650d</string>
+          <string>3dd7d4a286e3d8b9861f13e89df6fa55912216fa</string>
+          <string>4119504b4a2acfe488c45bd699b2084fbd67a9c7</string>
+          <string>441e3e91aaa828408650a4f32c2ce1e9aceeaf11</string>
+          <string>45ec27cc5b2ccb88d3c9317baafb663f2fea6f3d</string>
+          <string>47133c60c6131d64cfb74f65f324176617907e7a</string>
+          <string>4863b9498c86b05e56174ddb1efa0c3e698d2faf</string>
+          <string>48932e378026ca9f85e7fbb705a8c91552058dfd</string>
+          <string>496e30e66167f9a401e75a4a2b76227226fc2149</string>
+          <string>4d2816e43592da6d04bd512b19d185a46c68c6e4</string>
+          <string>510c2f8587405d70bcff8d5906af1aae1812cf96</string>
+          <string>52a80c0c3fa7c06439e3c64a599cfc0aa2d14cfa</string>
+          <string>55eb243e34d120f8ee6249e28ab7d4c3705568b2</string>
+          <string>565319e0bc349dd3b3ae47c3abf0df6eb20d2f90</string>
+          <string>57af5862745bba5e5465ce4567b8e1a832fde52c</string>
+          <string>5b8fd09f93ecb7e7a82e2601584e8fb319d0b5a2</string>
+          <string>5cd2d6021825b3d0644625e9ee94fbdb313ea064</string>
+          <string>5cf22a1f3fe0c59c8ce47c023ff5ebe7669a2fc2</string>
+          <string>61db9bb9912a06c08265dbbf8eea8fbc9de26f67</string>
+          <string>62c850ddcf7358e1087d58f56e3e41743add37e0</string>
+          <string>64c60db00fe4b6cc8ee59780c13e5a9d273a28c0</string>
+          <string>657b4a45114586309275760d9451653ca96bc856</string>
+          <string>6c4b937dbb1d3d008605ee8bd8d3cef04f6bab75</string>
+          <string>6e8b35d0824c8a052218ef2bc931045a4ba02621</string>
+          <string>7082f7bbe404f3154ed6f36da2f2bbb9f7873447</string>
+          <string>75a6b823f98ca800d62e2585eb6b06b821f72169</string>
+          <string>75cf026f1632feab515307a6d45ed19eaed7dd83</string>
+          <string>76f55fc24b236b85d2d7e5d173b4385397e9d6a0</string>
+          <string>78e792b5b286e5c11057980c5faaeedc03b8640f</string>
+          <string>7a707677d50e0b3f7f03981934031cb3e662996d</string>
+          <string>7dbd9e0289c270b6ccbfee756b13b3a40f6e6cfd</string>
+          <string>7e0df171f936b915cae06fa9357685be6011fd6e</string>
+          <string>8468456dc93ad72776a19954dc4698b1ced02982</string>
+          <string>84867b7372799085e2a7dfdc4aecdb1a20af17c0</string>
+          <string>85ea3be4384e0e657d5cf85889dc729ebc8b7371</string>
+          <string>85fea9718882a0be4617d1a46388877fb62270bb</string>
+          <string>890ea8c6a7e3ae06eb937e3312a00627fafb6263</string>
+          <string>89f2066a6fd56143dddea32667d1a97f46549cc7</string>
+          <string>8aef3867ec5c8ae0a171e0a1b58099176028c698</string>
+          <string>8b9b966147fe29a96ead8da1fd668f12a9614b17</string>
+          <string>8c2f49e599625767d8ea0e74138cc00d100e8d30</string>
+          <string>8e4754badb16c6a4e8cc92e14ec8ba07196b026f</string>
+          <string>91f9a78069af0a9744ffa9bc2ac24c59a535d3fe</string>
+          <string>9305549a4aa23c0fd1fd958de4f1cbfd75514c8d</string>
+          <string>944cc8feb9f525d98c555815fe1a1085eda25ae6</string>
+          <string>959863e7947eededa5ddaf9cc7360266ae7e96da</string>
+          <string>95c6e804c80eebada0d6cbefd18f5a35f1016870</string>
+          <string>967b4e562a84fed4e340978865bb86c425751c85</string>
+          <string>9957739e3208e7b986d7ab7cef14f77d8b3d3081</string>
+          <string>9b5c85defe751367c969058675e54aafa56f2f75</string>
+          <string>a1f4ff412b082cd0276ba1b380f39106cdd80692</string>
+          <string>a36d6abc42873c74718380954e6791d476fe6684</string>
+          <string>a6a618fee0fd96c7b4d1acf9be6ab086a5bfed6a</string>
+          <string>a6e3146e685e339f47f4a0a3cb1bbddea8349c1b</string>
+          <string>a9bad4a9964da5b27038037aa90aba6933a8f19a</string>
+          <string>aaa54263e27f1333f73a07303f5abb72a7b85363</string>
+          <string>ac250c18ffd4b57e3a0dfef14d25e1c903eb3bae</string>
+          <string>ad171985cd22839a2c5f29068848c882dcef9351</string>
+          <string>ae4098294dbaa1ae8c41c906e89eb958545062da</string>
+          <string>b2071f13b3ecfe9b64542c792dc19dff74020294</string>
+          <string>b2ed6262da597ff1833ae8ca0ebcca1020463a2f</string>
+          <string>b43f23e20acdbf15339fe8ae2e5e1be852e637ee</string>
+          <string>b5ae24add2759a74c69f346f4e08489efa63966a</string>
+          <string>b6f74c2c37daebbf7048ed08fbc30eda56786ef1</string>
+          <string>b86010a19e84151293e634817c2a5455b21a3a31</string>
+          <string>b9586a8d8888b8dfe7d3d6f93bb121080f3cf9e1</string>
+          <string>bb676cf5c23ccb3806f5244c58e7cc1f141e5b37</string>
+          <string>bcc769324651a0b7082dfb73e50f1a89358cca5e</string>
+          <string>bef4e242550c00ae4718926cfe57afda196a0213</string>
+          <string>c0af0287937f2aa7b6e5c6c7caf939e75ea6fdfb</string>
+          <string>c57aa5e76dea6f0e4f68c61d455fab18665ccf64</string>
+          <string>c71d8514c0adf7ee2ee146ac933b077b344dac4e</string>
+          <string>c728f1c5a273587de307763d80acdea75ef1f278</string>
+          <string>c8e7780773862d4d9d4838244a7bdce77a64cb4f</string>
+          <string>ca399df4c85b51cbbf69e405be592c530392577d</string>
+          <string>ca8e3da103d0eb1897bb29e5b1cb39be55860e31</string>
+          <string>cafc3adc4da4b30332bd7820b3ec6ee5fc9017c4</string>
+          <string>cbd6d9b5b5101aec73dde4db3ee3d787d6261c80</string>
+          <string>cbda6f7010f2aa7cff4599700493dc54cd2e3463</string>
+          <string>ccf06d620e22d4070b6485eb69598828f5c0041e</string>
+          <string>cff769ae639666fc02647561ba63d5145fca630a</string>
+          <string>d22110ba938344317c4f71707a945dba5371eb2d</string>
+          <string>d3e30966f807ac10588800c11cfc1687cf6a8808</string>
+          <string>d5ecd264575521657fddc637516c7a79cdde76d6</string>
+          <string>d7683a9eb118ebb21b1ea8eff27a89403aaa55b5</string>
+          <string>d8e69dfa2aafab64ba7aaf2002a4b3614a9df3c8</string>
+          <string>db26708038db43187467981eee846fd0264b40e9</string>
+          <string>db2e87937549d71e0c0ded8b813b32943f6ca53a</string>
+          <string>db4a58a5499fbe6a8c750cf6e8f52f876a0ba87a</string>
+          <string>dc0dd80cc7b3cd1b17347a117b48f70f567dd452</string>
+          <string>dcbf7834c639d3ada5246c821560ce050f00890c</string>
+          <string>dcd3d1612cf28b6c2f2da05748668749ef68054d</string>
+          <string>dd7965ddc02b3968e56b238fdaddb9388256fcf8</string>
+          <string>e16457588eb3f88b735775f3e7ed77b0f08204d1</string>
+          <string>e28defad55fc5c68d1395273cbcc45d86e4548f7</string>
+          <string>e4840e2cd57922466a166497fb28a1727b2c0352</string>
+          <string>e6d2d3d9d84b80ace50a94e6d79f0bbbdd77376b</string>
+          <string>e8373cc8aa61a636387a218fe560189e45d305ee</string>
+          <string>e8b208db5a1f6b1d11e8c40923bdf4ef147ac12b</string>
+          <string>e99b753695a6c73905063f0f7d59df06a13afbc5</string>
+          <string>e9c0497d07a021ea8af4b653665f54d7288193d0</string>
+          <string>ec1c8303af3853867aa71838a95ef352d10bc58a</string>
+          <string>ed6ea06ac8ab8b4f890a0c89a6e0f4f465755aa1</string>
+          <string>ef6324de8357129b2c12a85c57052d5801965700</string>
+          <string>f1b2bc65cd186c72c69316357c84ce3cf20188c5</string>
+          <string>f35e43dd6138c2f363f101ab7f509723d7cc214f</string>
+          <string>f3cd2945db30dd52a468a5af4ad7776605a8d87f</string>
+          <string>f3e61a535d809f417f3119eb9971b6ba62f71a68</string>
+          <string>f9800ce015a1e9ba6f4961c98b7c96db27eb4432</string>
+          <string>fd96b75098edc41ccba096c6cda6ba6e4ea04b80</string>
+          <string>fe07a6f63bcc6d3135386d7f567a985b21bf18c9</string>
+          <string>fe0fb245b875446eb023f24c18a4598595888780</string>
+          <string>fe39bcf6263405a2b032dedc3659584002c389a5</string>
+          <string>fe9a3aafa85f44b5c9cd80c0ffe8ec8913225072</string>
+        </approvedScriptHashes>
+        <approvedSignatures>
+          <string>method com.cloudbees.plugins.credentials.common.IdCredentials getId</string>
+          <string>method com.cloudbees.plugins.credentials.common.PasswordCredentials getPassword</string>
+          <string>method com.cloudbees.plugins.credentials.common.UsernameCredentials getUsername</string>
+          <string>method groovy.json.JsonSlurper parse java.io.Reader</string>
+          <string>method groovy.json.JsonSlurperClassic parseText java.lang.String</string>
+          <string>method groovy.lang.GString getBytes</string>
+          <string>method groovy.lang.GroovyObject getProperty java.lang.String</string>
+          <string>method groovy.lang.GroovyObject setProperty java.lang.String java.lang.Object</string>
+          <string>method hudson.model.Actionable getAction java.lang.Class</string>
+          <string>method hudson.model.Job getLastBuild</string>
+          <string>method hudson.model.Run getCause java.lang.Class</string>
+          <string>method hudson.util.Secret toString hudson.util.Secret</string>
+          <string>method java.net.URL openConnection</string>
+          <string>method java.net.URLConnection getInputStream</string>
+          <string>method java.net.URLConnection setRequestProperty java.lang.String java.lang.String</string>
+          <string>method java.util.LinkedHashMap getValue</string>
+          <string>method jenkins.model.Jenkins getItemByFullName java.lang.String</string>
+          <string>method org.jenkinsci.plugins.workflow.support.actions.EnvironmentAction getEnvironment</string>
+          <string>method org.jenkinsci.plugins.workflow.support.steps.build.RunWrapper getRawBuild</string>
+          <string>method org.yaml.snakeyaml.DumperOptions setDefaultFlowStyle org.yaml.snakeyaml.DumperOptions$FlowStyle</string>
+          <string>method org.yaml.snakeyaml.DumperOptions setPrettyFlow boolean</string>
+          <string>method org.yaml.snakeyaml.Yaml dump java.lang.Object</string>
+          <string>method org.yaml.snakeyaml.Yaml load java.lang.String</string>
+          <string>new groovy.json.JsonSlurperClassic</string>
+          <string>new groovy.lang.GroovyClassLoader</string>
+          <string>new hudson.EnvVars java.lang.String[]</string>
+          <string>new java.io.BufferedReader java.io.Reader</string>
+          <string>new java.io.File java.lang.String</string>
+          <string>new java.io.InputStreamReader java.io.InputStream</string>
+          <string>new java.lang.Exception java.lang.String</string>
+          <string>new java.util.ArrayList java.util.Collection</string>
+          <string>new java.util.HashMap java.util.Map</string>
+          <string>new org.yaml.snakeyaml.DumperOptions</string>
+          <string>new org.yaml.snakeyaml.Yaml</string>
+          <string>new org.yaml.snakeyaml.Yaml org.yaml.snakeyaml.DumperOptions</string>
+          <string>staticField groovy.io.FileType DIRECTORIES</string>
+          <string>staticField hudson.model.Result SUCCESS</string>
+          <string>staticField org.yaml.snakeyaml.DumperOptions$FlowStyle BLOCK</string>
+          <string>staticMethod com.cloudbees.plugins.credentials.CredentialsProvider lookupCredentials java.lang.Class hudson.model.ItemGroup</string>
+          <string>staticMethod java.util.regex.Pattern quote java.lang.String</string>
+          <string>staticMethod jenkins.model.Jenkins getInstance</string>
+          <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods addAll java.util.Collection java.lang.Object[]</string>
+          <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods findResult java.util.Collection groovy.lang.Closure</string>
+          <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods getProperties java.lang.Object</string>
+          <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods getText java.net.URL</string>
+          <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods inject java.util.Map java.lang.Object groovy.lang.Closure</string>
+          <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods invokeMethod java.lang.Object java.lang.String java.lang.Object</string>
+          <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods leftShift java.util.Map java.util.Map</string>
+          <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods println java.lang.Object java.lang.Object</string>
+          <string>staticMethod org.codehaus.groovy.runtime.EncodingGroovyMethods encodeBase64 byte[]</string>
+          <string>staticMethod org.codehaus.groovy.runtime.ScriptBytecodeAdapter createRange java.lang.Object java.lang.Object boolean</string>
+        </approvedSignatures>
+        <aclApprovedSignatures/>
+        <approvedClasspathEntries>
+          <approvedClasspathEntry>
+            <hash>7a27ea250c5130b2922b86dea63cbb1cc10a660c</hash>
+            <url>http://central.maven.org/maven2/org/yaml/snakeyaml/1.17/snakeyaml-1.17.jar</url>
+          </approvedClasspathEntry>
+        </approvedClasspathEntries>
+        <pendingScripts/>
+        <pendingSignatures/>
+        <pendingClasspathEntries/>
+      </scriptApproval>
   
   jenkins.plugins.slack.SlackNotifier.xml: |-
     <?xml version='1.0' encoding='UTF-8'?>
