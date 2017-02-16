@@ -8,7 +8,7 @@ data:
       <disabledAdministrativeMonitors>
         <string>hudson.diagnosis.ReverseProxySetupMonitor</string>
       </disabledAdministrativeMonitors>
-      <version>2.45</version>
+      <version>2.46</version>
       <numExecutors>1</numExecutors>
       <mode>NORMAL</mode>
       <useSecurity>true</useSecurity>
