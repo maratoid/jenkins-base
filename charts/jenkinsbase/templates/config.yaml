@@ -281,7 +281,6 @@ data:
           <string>new groovy.lang.GroovyClassLoader</string>
           <string>new hudson.EnvVars java.lang.String[]</string>
           <string>new java.io.BufferedReader java.io.Reader</string>
-          <string>new java.io.File java.lang.String</string>
           <string>new java.io.InputStreamReader java.io.InputStream</string>
           <string>new java.lang.Exception java.lang.String</string>
           <string>new java.util.ArrayList java.util.Collection</string>
