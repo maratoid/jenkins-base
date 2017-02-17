@@ -6,7 +6,7 @@ metadata:
     name: jenkins
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
-    chart: "{{.Chart.Name}}-{{.Chart.Version}}"
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     component: "{{.Release.Name}}-jenkins-master"
   annotations:
     "helm.sh/created": {{.Release.Time.Seconds | quote }}
