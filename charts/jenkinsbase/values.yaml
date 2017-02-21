@@ -36,9 +36,7 @@ gke:
   svcAccountKey: "change me"
 
 ssh:
-  sshPrivateKeyFile:
   sshPrivateKey: "change me"
-  sshPublicKeyFile:
   sshPublicKey: "change me"
 
 persistence:
