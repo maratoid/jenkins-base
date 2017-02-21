@@ -5,8 +5,4 @@ metadata:
   annotations:
     "helm.sh/hook": pre-install
 data:
-{{if .Values.helm.svcAccountKeyFile}}
-  helm-service-account.json: {{ include .Values.helm.svcAccountKeyFile . | b64enc | replace "\n" "" | quote }}
-{{else}}
-  helm-service-account.json: {{ .Values.helm.svcAccountKey | b64enc | replace "\n" "" | quote }}
-{{end}}
+  service-account.json: {{ .Values.helm.svcAccountKey | quote }}

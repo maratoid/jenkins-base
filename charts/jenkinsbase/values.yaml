@@ -33,7 +33,6 @@ gke:
   clusterPrimaryZone: "us-east1-b"
   gkeProject: "change me"
   svcAccountId: "change me"
-  svcAccountKeyFile:
   svcAccountKey: "change me"
 
 ssh:
@@ -75,4 +74,3 @@ master:
 helm:
   svcAccountId: "change me"
   svcAccountKey: "change me"
-  svcAccountKeyFile:
