@@ -46,6 +46,7 @@ persistence:
   component: "data_volume"
   enabled: false
   storageClass: "generic"
+  reclaiming: "Retained"
   accessMode: "ReadWriteOnce"
   size: 8Gi
 
