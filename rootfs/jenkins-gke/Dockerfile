@@ -1,7 +1,6 @@
-FROM gcr.io/google_containers/ubuntu-slim:0.3
+FROM golang:1.6.4
 
-ENV GOOGLE_CLOUD_SDK_VERSION=117.0.0 \
-  KUBERNETES_VERSION=v1.5.2 \
+ENV KUBERNETES_VERSION=v1.5.2 \
   HELM_VERSION=v2.1.3 \
   DOCKER_API_VERSION=1.23
 
@@ -32,4 +31,8 @@ RUN wget http://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}-linu
   && rm -rf helm-${HELM_VERSION}-linux-amd64.tar.gz linux-amd64
 
 # Install Docker from Docker Inc. repositories.   
- RUN curl -sSL https://get.docker.com/ | sh
+RUN curl -sSL https://get.docker.com/ | sh
+
+# install ginkgo and gomega
+RUN go get github.com/onsi/ginkgo/ginkgo
+RUN go get github.com/onsi/gomega
