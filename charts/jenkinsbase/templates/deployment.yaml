@@ -104,6 +104,14 @@ spec:
               mountPath: /etc/jenkins-ssh-keys
               name: jenkins-ssh-keys
               readOnly: true
+            -
+              mountPath: /etc/gke
+              name: jenkins-gke-keys
+              readOnly: true
+            -
+              mountPath: /etc/helm
+              name: jenkins-helm-keys
+              readOnly: true
       volumes:
       - name: jenkins-config
         configMap:
@@ -115,6 +123,12 @@ spec:
         secret:
           secretName: jenkins-ssh-{{.Release.Name}}
           defaultMode: 0400
+      - name: jenkins-gke-keys
+        secret:
+          secretName: jenkins-gke-{{.Release.Name}}
+      - name: jenkins-helm-keys
+        secret:
+          secretName: jenkins-helm-{{.Release.Name}}
       {{- if .Values.persistence.enabled }}
       - name: jenkins-jobs
         persistentVolumeClaim:
