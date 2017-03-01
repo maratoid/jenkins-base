@@ -1,11 +1,12 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ template "jobname" . }}
+  name: {{ template "jenkinsJobName" . }}
   labels:
     heritage: {{.Release.Service | quote }}
     release: {{.Release.Name | quote }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    component: "jenkins"
   annotations:
     "helm.sh/created": {{.Release.Time.Seconds | quote }}
 spec:
@@ -14,7 +15,7 @@ spec:
   parallelism: 1
   template:
     metadata:
-      name: jenkins-create-jobs
+      name: {{ template "jenkinsJobName" . }}
       labels:
         heritage: {{.Release.Service | quote }}
         release: {{.Release.Name | quote }}
@@ -22,7 +23,7 @@ spec:
     spec:
       restartPolicy: "Never"
       containers:
-        - name: jenkins-create-jobs
+        - name: {{ template "jenkinsJobName" . }}
           image: "{{.Values.agent.image}}"
           imagePullPolicy: Always
           command: 
