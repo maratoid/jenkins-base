@@ -17,7 +17,7 @@ Create a random (but prefixed) name for unmanaged (hook) resources for easier cl
 {{/*
 Create a random postfixed name for ci job creation k8s job
 */}}
-{{- define "jobname" -}}
+{{- define "jenkinsJobName" -}}
 {{- $prefix := randAlpha 10 -}}
 {{- printf "create-jobs-%s" $prefix | lower | trunc 24 -}}
 {{- end -}}
