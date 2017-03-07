@@ -1,0 +1,4 @@
+apiVersion: v1
+description: A Chart to spin up a jenkins slave pod for testing purposes
+name: slavetest
+version: 0.1.0
