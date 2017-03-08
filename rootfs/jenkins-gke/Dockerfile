@@ -1,4 +1,4 @@
-FROM golang:1.7.3
+FROM golang:1.8.0
 
 ENV KUBERNETES_VERSION=v1.5.2 \
   HELM_VERSION=v2.1.3 \
