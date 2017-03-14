@@ -4,13 +4,13 @@
 # name: value
 
 # github, jenkins or ldap
-adminEmail: "maratoid+samsungjenkins@gmail.com"
+adminEmail: "me@email.com"
 adminPassword: "admin"
 adminUser: "admin"
 javaOptions: "-Xms1024m -Xmx1024m -Djenkins.install.runSetupWizard=false"
-jenkinsUrl: "jenkins.cnct.io"
-jenkinsHookUrl: 
-jobsRepo: "https://github.com/samsung-cnct/kraken-ci-jobs"
+jenkinsHookUrl:
+jenkinsUrl: "jenkins.somedomain.io"
+workflowRepo: "https://github.com/samsung-cnct/zonar-pipeline-library"
 seedJobToken: "seed"
 
 # github, jenkins or ldap

@@ -102,3 +102,4 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 | --- | --- | --- |
 | `helm.svcAccountId` | Helm service account Id | `change me` |
 | `helm.svcAccountKey` | Helm service account key | `change me` |
+| `helm.svcAccountKey` | Helm service account key | `change me` |

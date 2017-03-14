@@ -12,4 +12,6 @@
 hs_err_pid*
 
 **/*.tgz
-**/.zonar-charts
+
+# IDE files
+.idea
