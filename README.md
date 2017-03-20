@@ -10,14 +10,6 @@ This chart will do the following:
 * 1 x Jenkins Master with port 8080 exposed on an external LoadBalancer
 * All using Kubernetes Deployments
 
-## Installing the Chart
-
-To install the chart with the release name `my-release`:
-
-```bash
-$ helm install --name my-release stable/jenkins
-```
-
 ## Configuration
 
 The following tables lists the configurable parameters of the Jenkins chart and their default values.
