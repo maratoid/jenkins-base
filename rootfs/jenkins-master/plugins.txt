@@ -32,6 +32,7 @@ github-api:1.85
 github-branch-source:2.0.4
 github-oauth:0.25
 github-organization-folder:1.6
+github-pr-comment-build:1.1
 github:1.26.1
 greenballs:1.15
 handlebars:1.1.1
