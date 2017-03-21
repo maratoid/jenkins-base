@@ -25,6 +25,7 @@ github:
   githubClientId: "change me"
   githubAccessToken: "change me"
   githubUserName: "change me"
+  githubOrgName: "change me"
   githubClientKey: "change me"
   admin_usernames: "change me"
 
