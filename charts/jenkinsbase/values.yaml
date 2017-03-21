@@ -9,6 +9,7 @@ adminPassword: "admin"
 adminUser: "admin"
 javaOptions: "-Xms1024m -Xmx1024m -Djenkins.install.runSetupWizard=false"
 jenkinsUrl: "jenkins.cnct.io"
+jenkinsHookUrl: 
 jobsRepo: "https://github.com/samsung-cnct/kraken-ci-jobs"
 seedJobToken: "seed"
 
@@ -25,6 +26,7 @@ github:
   githubClientId: "change me"
   githubAccessToken: "change me"
   githubUserName: "change me"
+  githubOrgNames: "change me"
   githubClientKey: "change me"
   admin_usernames: "change me"
 

@@ -16,17 +16,19 @@ data:
       <authorizationStrategy class="org.jenkinsci.plugins.GithubAuthorizationStrategy" plugin="github-oauth@0.25">
         <rootACL>
           <organizationNameList class="linked-list">
-            <string></string>
+            {{ range .Values.github.githubOrgNames | split " " }}
+            <string>{{ . }}</string>
+            {{ end }}
           </organizationNameList>
           <adminUserNameList class="linked-list">
             {{ range .Values.github.admin_usernames | split " " }}
             <string>{{ . }}</string>
             {{ end }}
           </adminUserNameList>
-          <authenticatedUserReadPermission>true</authenticatedUserReadPermission>
-          <useRepositoryPermissions>true</useRepositoryPermissions>
-          <authenticatedUserCreateJobPermission>true</authenticatedUserCreateJobPermission>
-          <allowGithubWebHookPermission>true</allowGithubWebHookPermission>
+          <authenticatedUserReadPermission>false</authenticatedUserReadPermission>
+          <useRepositoryPermissions>false</useRepositoryPermissions>
+          <authenticatedUserCreateJobPermission>false</authenticatedUserCreateJobPermission>
+          <allowGithubWebHookPermission>false</allowGithubWebHookPermission>
           <allowCcTrayPermission>false</allowCcTrayPermission>
           <allowAnonymousReadPermission>false</allowAnonymousReadPermission>
           <allowAnonymousJobStatusPermission>false</allowAnonymousJobStatusPermission>
@@ -244,8 +246,11 @@ data:
           <clientCacheSize>20</clientCacheSize>
         </github-server-config>
       </configs>
+      {{ if .Values.jenkinsHookUrl }}
+      <hookUrl>{{ .Values.jenkinsHookUrl }}</hookUrl>
+      {{ end }}
       <hookSecretConfig>
-        <credentialsId></credentialsId>
+        <credentialsId>github-access</credentialsId>
       </hookSecretConfig>
     </github-plugin-configuration> 
 
@@ -428,15 +433,15 @@ data:
     cp -f /var/jenkins_config/github-plugin-configuration.xml /var/jenkins_home
     cp -f /var/jenkins_config/scriptApproval.xml /var/jenkins_home
 
+    {{ if eq .Values.security "jenkins" }}
     # create admin user folder
     mkdir -p /var/jenkins_home/users/admin
     cp -f /var/jenkins_config/admin-config.xml /var/jenkins_home/users/admin/config.xml
+    {{ end }}
 
     # create ssh config
-    {{ if eq .Values.security "jenkins" }}
     mkdir -p /root/.ssh
     cp -f /var/jenkins_config/config /root/.ssh
-    {{ end }}
 
     # replace tokens
     {{ if eq .Values.security "jenkins" }}
@@ -478,8 +483,11 @@ data:
     {{ end }}
 
     echo "Running seed job"
+    {{ if eq .Values.security "github" }}
+    curl -X POST http://{{ .Values.github.githubUserName }}:${JENKINS_API_TOKEN}@${JENKINS_SERVICE_HOST}:${JENKINS_SERVICE_PORT}/job/seed/build?token={{ .Values.seedJobToken }}
+    {{ else }}
     curl -X POST http://{{ .Values.adminUser }}:${JENKINS_API_TOKEN}@${JENKINS_SERVICE_HOST}:${JENKINS_SERVICE_PORT}/job/seed/build?token={{ .Values.seedJobToken }}
-
+    {{ end }}
   config: |-
     IdentityFile            /etc/jenkins-ssh-keys/ssh-privatekey
     IdentitiesOnly          yes 
