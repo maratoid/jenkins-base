@@ -16,7 +16,9 @@ data:
       <authorizationStrategy class="org.jenkinsci.plugins.GithubAuthorizationStrategy" plugin="github-oauth@0.25">
         <rootACL>
           <organizationNameList class="linked-list">
-            <string>{{ .Values.github.githubOrgName }}</string>
+            {{ range .Values.github.githubOrgNames | split " " }}
+            <string>{{ . }}</string>
+            {{ end }}
           </organizationNameList>
           <adminUserNameList class="linked-list">
             {{ range .Values.github.admin_usernames | split " " }}
@@ -244,8 +246,11 @@ data:
           <clientCacheSize>20</clientCacheSize>
         </github-server-config>
       </configs>
+      {{ if .Values.jenkinsHookUrl }}
+      <hookUrl>{{ .Values.jenkinsHookUrl }}</hookUrl>
+      {{ end }}
       <hookSecretConfig>
-        <credentialsId></credentialsId>
+        <credentialsId>github-access</credentialsId>
       </hookSecretConfig>
     </github-plugin-configuration> 
 
