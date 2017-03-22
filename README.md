@@ -22,7 +22,8 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 | `adminUser` | Administrator account username | `admin` |
 | `javaOptions` | Java runtime options | `-Xms1024m -Xmx1024m -Djenkins.install.runSetupWizard=false` |
 | `jenkinsUrl` | Jenkins URL | `jenkins.cnct.io` |
-| `jobsRepo` | Jenkins jobs repo | `https://github.com/samsung-cnct/kraken-ci-jobs` |
+| `jenkinsHookUrl` | Jenkins web url | `optional` |
+| `workflowRepo` | Jenkins jobs repo | `https://github.com/samsung-cnct/zonar-pipeline-library` |
 | `seedJobToken` | Seed job token | `seed` |
 | `security` | Security type (`github`, `jenkins`, or `ldap`) | `jenkins` |
 | `adminUserSalt` | Admin user salt; change if using Jenkins security | `change me if using jenkins security` |
