@@ -255,67 +255,51 @@ data:
     </github-plugin-configuration> 
 
   scriptApproval.xml: |-
-      <?xml version='1.0' encoding='UTF-8'?>
-      <scriptApproval plugin="script-security@1.25">
-        <approvedScriptHashes/>
-        <approvedSignatures>
-          <string>method com.cloudbees.plugins.credentials.common.IdCredentials getId</string>
-          <string>method com.cloudbees.plugins.credentials.common.PasswordCredentials getPassword</string>
-          <string>method com.cloudbees.plugins.credentials.common.UsernameCredentials getUsername</string>
-          <string>method groovy.json.JsonSlurper parse java.io.Reader</string>
-          <string>method groovy.json.JsonSlurperClassic parseText java.lang.String</string>
-          <string>method groovy.lang.GString getBytes</string>
-          <string>method groovy.lang.GroovyObject getProperty java.lang.String</string>
-          <string>method groovy.lang.GroovyObject setProperty java.lang.String java.lang.Object</string>
-          <string>method hudson.model.Actionable getAction java.lang.Class</string>
-          <string>method hudson.model.Job getLastBuild</string>
-          <string>method hudson.model.Run getCause java.lang.Class</string>
-          <string>method hudson.util.Secret toString hudson.util.Secret</string>
-          <string>method java.net.URL openConnection</string>
-          <string>method java.net.URLConnection getInputStream</string>
-          <string>method java.net.URLConnection setRequestProperty java.lang.String java.lang.String</string>
-          <string>method java.util.LinkedHashMap getValue</string>
-          <string>method jenkins.model.Jenkins getItemByFullName java.lang.String</string>
-          <string>method org.jenkinsci.plugins.workflow.support.actions.EnvironmentAction getEnvironment</string>
-          <string>method org.jenkinsci.plugins.workflow.support.steps.build.RunWrapper getRawBuild</string>
-          <string>method org.yaml.snakeyaml.DumperOptions setDefaultFlowStyle org.yaml.snakeyaml.DumperOptions$FlowStyle</string>
-          <string>method org.yaml.snakeyaml.DumperOptions setPrettyFlow boolean</string>
-          <string>method org.yaml.snakeyaml.Yaml dump java.lang.Object</string>
-          <string>method org.yaml.snakeyaml.Yaml load java.lang.String</string>
-          <string>new groovy.json.JsonSlurperClassic</string>
-          <string>new groovy.lang.GroovyClassLoader</string>
-          <string>new hudson.EnvVars java.lang.String[]</string>
-          <string>new java.io.BufferedReader java.io.Reader</string>
-          <string>new java.io.InputStreamReader java.io.InputStream</string>
-          <string>new java.lang.Exception java.lang.String</string>
-          <string>new java.util.ArrayList java.util.Collection</string>
-          <string>new java.util.HashMap java.util.Map</string>
-          <string>new org.yaml.snakeyaml.DumperOptions</string>
-          <string>new org.yaml.snakeyaml.Yaml</string>
-          <string>new org.yaml.snakeyaml.Yaml org.yaml.snakeyaml.DumperOptions</string>
-          <string>staticField groovy.io.FileType DIRECTORIES</string>
-          <string>staticField hudson.model.Result SUCCESS</string>
-          <string>staticField org.yaml.snakeyaml.DumperOptions$FlowStyle BLOCK</string>
-          <string>staticMethod com.cloudbees.plugins.credentials.CredentialsProvider lookupCredentials java.lang.Class hudson.model.ItemGroup</string>
-          <string>staticMethod java.util.regex.Pattern quote java.lang.String</string>
-          <string>staticMethod jenkins.model.Jenkins getInstance</string>
-          <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods addAll java.util.Collection java.lang.Object[]</string>
-          <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods findResult java.util.Collection groovy.lang.Closure</string>
-          <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods getProperties java.lang.Object</string>
-          <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods getText java.net.URL</string>
-          <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods inject java.util.Map java.lang.Object groovy.lang.Closure</string>
-          <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods invokeMethod java.lang.Object java.lang.String java.lang.Object</string>
-          <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods leftShift java.util.Map java.util.Map</string>
-          <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods println java.lang.Object java.lang.Object</string>
-          <string>staticMethod org.codehaus.groovy.runtime.EncodingGroovyMethods encodeBase64 byte[]</string>
-          <string>staticMethod org.codehaus.groovy.runtime.ScriptBytecodeAdapter createRange java.lang.Object java.lang.Object boolean</string>
-        </approvedSignatures>
-        <aclApprovedSignatures/>
-        <approvedClasspathEntries/>
-        <pendingScripts/>
-        <pendingSignatures/>
-        <pendingClasspathEntries/>
-      </scriptApproval>
+    <?xml version='1.0' encoding='UTF-8'?>
+    <scriptApproval plugin="script-security@1.25">
+      <approvedScriptHashes/>
+      <approvedSignatures>
+        <string>method groovy.json.JsonSlurperClassic parseText java.lang.String</string>
+        <string>method groovy.lang.GroovyObject getProperty java.lang.String</string>
+        <string>method groovy.lang.GroovyObject setProperty java.lang.String java.lang.Object</string>
+        <string>method hudson.model.Actionable getAction java.lang.Class</string>
+        <string>method hudson.model.Cause getShortDescription</string>
+        <string>method hudson.model.Job getLastBuild</string>
+        <string>method hudson.model.Run getCause java.lang.Class</string>
+        <string>method hudson.model.Run getCauses</string>
+        <string>method jenkins.model.Jenkins getItemByFullName java.lang.String</string>
+        <string>method org.jenkinsci.plugins.workflow.support.actions.EnvironmentAction getEnvironment</string>
+        <string>method org.jenkinsci.plugins.workflow.support.steps.build.RunWrapper getRawBuild</string>
+        <string>method org.yaml.snakeyaml.DumperOptions setDefaultFlowStyle org.yaml.snakeyaml.DumperOptions$FlowStyle</string>
+        <string>method org.yaml.snakeyaml.DumperOptions setPrettyFlow boolean</string>
+        <string>method org.yaml.snakeyaml.Yaml dump java.lang.Object</string>
+        <string>method org.yaml.snakeyaml.Yaml load java.lang.String</string>
+        <string>new groovy.json.JsonSlurperClassic</string>
+        <string>new hudson.EnvVars java.lang.String[]</string>
+        <string>new java.lang.Exception java.lang.String</string>
+        <string>new java.util.ArrayList java.util.Collection</string>
+        <string>new java.util.HashMap java.util.Map</string>
+        <string>new org.yaml.snakeyaml.DumperOptions</string>
+        <string>new org.yaml.snakeyaml.Yaml org.yaml.snakeyaml.DumperOptions</string>
+        <string>new org.yaml.snakeyaml.Yaml</string>
+        <string>staticField hudson.model.Result SUCCESS</string>
+        <string>staticField org.yaml.snakeyaml.DumperOptions$FlowStyle BLOCK</string>
+        <string>staticMethod java.util.regex.Pattern quote java.lang.String</string>
+        <string>staticMethod jenkins.model.Jenkins getInstance</string>
+        <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods addAll java.util.Collection java.lang.Object[]</string>
+        <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods getProperties java.lang.Object</string>
+        <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods inject java.util.Map java.lang.Object groovy.lang.Closure</string>
+        <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods invokeMethod java.lang.Object java.lang.String java.lang.Object</string>
+        <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods leftShift java.util.Map java.util.Map</string>
+        <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods println java.lang.Object java.lang.Object</string>
+        <string>staticMethod org.codehaus.groovy.runtime.ScriptBytecodeAdapter createRange java.lang.Object java.lang.Object boolean</string>
+      </approvedSignatures>
+      <aclApprovedSignatures/>
+      <approvedClasspathEntries/>
+      <pendingScripts/>
+      <pendingSignatures/>
+      <pendingClasspathEntries/>
+    </scriptApproval>
   
   jenkins.plugins.slack.SlackNotifier.xml: |-
     <?xml version='1.0' encoding='UTF-8'?>
