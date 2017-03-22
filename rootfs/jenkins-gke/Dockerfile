@@ -1,4 +1,4 @@
-FROM golang:1.6.4
+FROM golang:1.8.0
 
 ENV KUBERNETES_VERSION=v1.5.4 \
   HELM_VERSION=v2.2.3 \
@@ -33,6 +33,11 @@ RUN wget http://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}-linu
 # Install Docker from Docker Inc. repositories.   
 RUN curl -sSL https://get.docker.com/ | sh
 
-# install ginkgo and gomega
-RUN go get github.com/onsi/ginkgo/ginkgo
-RUN go get github.com/onsi/gomega
+# install go packages: ginkgo, gomega, dep, and k8s client
+RUN go get github.com/onsi/ginkgo/ginkgo\
+    && go get github.com/onsi/gomega \
+    && go get github.com/golang/dep \
+    && go install github.com/golang/dep/cmd/dep \
+    && go get k8s.io/client-go/...
+
+    
