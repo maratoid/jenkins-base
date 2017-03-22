@@ -1,7 +1,7 @@
 FROM golang:1.8.0
 
-ENV KUBERNETES_VERSION=v1.5.2 \
-  HELM_VERSION=v2.1.3 \
+ENV KUBERNETES_VERSION=v1.5.4 \
+  HELM_VERSION=v2.2.3 \
   DOCKER_API_VERSION=1.23
 
 RUN apt-get update -qq && apt-get install -qqy \
