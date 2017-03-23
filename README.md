@@ -22,6 +22,7 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 | `adminUser` | Administrator account username | `admin` |
 | `javaOptions` | Java runtime options | `-Xms1024m -Xmx1024m -Djenkins.install.runSetupWizard=false` |
 | `jenkinsUrl` | Jenkins URL | `jenkins.cnct.io` |
+| `jobsRepo` | Jenkins jobs repo | `https://github.com/samsung-cnct/kraken-ci-jobs` |
 | `jenkinsHookUrl` | Jenkins web url | `optional` |
 | `workflowRepo` | Jenkins jobs repo | `https://github.com/samsung-cnct/zonar-pipeline-library` |
 | `seedJobToken` | Seed job token | `seed` |
@@ -103,4 +104,4 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 | --- | --- | --- |
 | `helm.svcAccountId` | Helm service account Id | `change me` |
 | `helm.svcAccountKey` | Helm service account key | `change me` |
-| `helm.svcAccountKey` | Helm service account key | `change me` |
+2

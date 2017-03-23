@@ -10,7 +10,8 @@ adminUser: "admin"
 javaOptions: "-Xms1024m -Xmx1024m -Djenkins.install.runSetupWizard=false"
 jenkinsHookUrl:
 jenkinsUrl: "jenkins.somedomain.io"
-workflowRepo: "https://github.com/samsung-cnct/zonar-pipeline-library"
+jobsRepo: "URL to jobs repo"
+workflowRepo: "https://github.com/samsung-cnct/k8s-pipeline-library"
 seedJobToken: "seed"
 
 # github, jenkins or ldap

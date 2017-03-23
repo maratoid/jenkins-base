@@ -442,7 +442,7 @@ data:
 
     echo "Cloning job repository"
     rm -rf /etc/jenkins_jobs/*
-    git clone {{.Values.workflowRepo}} /etc/jenkins_jobs
+    git clone {{.Values.jobsRepo}} /etc/jenkins_jobs
 
     echo "Waiting for Jenkins to be available"
     {{ if eq .Values.security "github" }}
