@@ -1,8 +1,8 @@
-# Zonar Jenkins Base Helm Chart
+# Jenkins Base Helm Chart
 
 Jenkins cluster utilizing the Jenkins Kubernetes plugin
 
-* https://github.com/samsung-cnct/zonar-jenkins-base
+* https://github.com/samsung-cnct/jenkins-base
 
 ## Chart Details
 This chart will do the following:
@@ -24,7 +24,7 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 | `jenkinsUrl` | Jenkins URL | `jenkins.cnct.io` |
 | `jobsRepo` | Jenkins jobs repo | `https://github.com/samsung-cnct/kraken-ci-jobs` |
 | `jenkinsHookUrl` | Jenkins web url | `optional` |
-| `workflowRepo` | Jenkins jobs repo | `https://github.com/samsung-cnct/zonar-pipeline-library` |
+| `workflowRepo` | Jenkins jobs repo | `https://github.com/samsung-cnct/jenkins-pipeline-library` |
 | `seedJobToken` | Seed job token | `seed` |
 | `security` | Security type (`github`, `jenkins`, or `ldap`) | `jenkins` |
 | `adminUserSalt` | Admin user salt; change if using Jenkins security | `change me if using jenkins security` |
