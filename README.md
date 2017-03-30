@@ -1,8 +1,8 @@
-# Zonar Jenkins Base Helm Chart
+# Jenkins Base Helm Chart
 
 Jenkins cluster utilizing the Jenkins Kubernetes plugin
 
-* https://github.com/samsung-cnct/zonar-jenkins-base
+* https://github.com/samsung-cnct/jenkins-base
 
 ## Chart Details
 This chart will do the following:
@@ -17,14 +17,14 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 ### GitHub, Jenkins, or LDAP Authentication
 | Parameter | Description | Default |
 | --- | --- | --- |
-| `adminEmail` | Administrator email address | `maratoid+samsungjenkins@gmail.com` |
+| `adminEmail` | Administrator email address | `me@email.com` |
 | `adminPassword` | Administrator account password | `admin` |
 | `adminUser` | Administrator account username | `admin` |
 | `javaOptions` | Java runtime options | `-Xms1024m -Xmx1024m -Djenkins.install.runSetupWizard=false` |
 | `jenkinsUrl` | Jenkins URL | `jenkins.cnct.io` |
-| `jobsRepo` | Jenkins jobs repo | `https://github.com/samsung-cnct/kraken-ci-jobs` |
+| `jobsRepo` | Jenkins jobs repo | `https://github.com/pipeline-jobs` |
 | `jenkinsHookUrl` | Jenkins web url | `optional` |
-| `workflowRepo` | Jenkins jobs repo | `https://github.com/samsung-cnct/zonar-pipeline-library` |
+| `workflowRepo` | Jenkins jobs repo | `https://github.com/samsung-cnct/cnct-pipeline-library` |
 | `seedJobToken` | Seed job token | `seed` |
 | `security` | Security type (`github`, `jenkins`, or `ldap`) | `jenkins` |
 | `adminUserSalt` | Admin user salt; change if using Jenkins security | `change me if using jenkins security` |
@@ -33,7 +33,7 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 ### Slack
 | Parameter | Description | Default |
 | --- | --- | --- |
-| `slack.slackDomain` | Slack domain | `samsung-cnct` |
+| `slack.slackDomain` | Slack domain | `change me` |
 | `slack.slackRoom` | Slack room name | `#ping-jenkins` |
 | `slack.slackApiToken` | Slack API token | `change me` |
 
