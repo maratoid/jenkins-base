@@ -1,4 +1,4 @@
-# Zonar Jenkins Base Helm Chart
+# Jenkins Base Helm Chart
 
 Jenkins cluster utilizing the Jenkins Kubernetes plugin
 
