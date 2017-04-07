@@ -434,7 +434,7 @@ data:
 
   create-k8s-job.sh: |-
     #!/bin/bash
-    kubectl create -f /var/jenkins_config/screate-jobs.yaml
+    kubectl create -f /var/jenkins_config/create-jobs.yaml
 
   build-jenkins-jobs.sh: |-
     #!/bin/bash
@@ -500,14 +500,14 @@ data:
         metadata:
           name: {{ template "jenkinsJobName" . }}
           labels:
-            heritage: {{.Release.Service | quote }}
-            release: {{.Release.Name | quote }}
+            heritage: {{ .Release.Service | quote }}
+            release: {{ .Release.Name | quote }}
             chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
         spec:
           restartPolicy: "Never"
           containers:
             - name: {{ template "jenkinsJobName" . }}
-              image: "{{.Values.agent.images.gradle}}"
+              image: "{{ .Values.agent.images.gradle }}"
               imagePullPolicy: Always
               command: 
                 - "/bin/bash"
@@ -535,5 +535,5 @@ data:
                 defaultMode: 0775
             - name: jenkins-ssh-keys
               secret:
-                secretName: jenkins-ssh-{{.Release.Name}}
+                secretName: jenkins-ssh-{{ .Release.Name }}
                 defaultMode: 0400
