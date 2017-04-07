@@ -45,7 +45,7 @@ spec:
               "name": "create-job-creation-job",
               "imagePullPolicy": "Always",
               "image": "{{.Values.agent.images.gke}}",
-              "command": ["bash", "-ec", "/var/jenkins_config/render-jenkins-config.sh"],
+              "command": ["bash", "-ec", "/var/jenkins_config/create-k8s-job.sh"],
               "volumeMounts": [
                   {
                       "name": "jenkins-config",
