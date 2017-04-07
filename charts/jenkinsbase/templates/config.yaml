@@ -432,6 +432,10 @@ data:
     sed -i -e "s/\$SALTED_SHASUM/"{{ .Values.adminUserSalt }}:$(printf "{{ .Values.adminPassword }}{ {{ .Values.adminUserSalt }} }" | tr -d ' ' | shasum -a 256 | cut -d " " -f 1)"/" /var/jenkins_home/users/admin/config.xml
     {{ end }}
 
+  create-k8s-job.sh: |-
+    #!/bin/bash
+    kubectl create -f /var/jenkins_config/screate-jobs.yaml
+
   build-jenkins-jobs.sh: |-
     #!/bin/bash
 
@@ -476,3 +480,60 @@ data:
     IdentityFile            /etc/jenkins-ssh-keys/ssh-privatekey
     IdentitiesOnly          yes 
     StrictHostKeyChecking   no
+  create-jobs.yaml: |-
+    apiVersion: batch/v1
+    kind: Job
+    metadata:
+      name: {{ template "jenkinsJobName" . }}
+      labels:
+        heritage: {{.Release.Service | quote }}
+        release: {{.Release.Name | quote }}
+        chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+        component: "jenkins"
+      annotations:
+        "helm.sh/created": {{.Release.Time.Seconds | quote }}
+    spec:
+      activeDeadlineSeconds: 600
+      completions: 1
+      parallelism: 1
+      template:
+        metadata:
+          name: {{ template "jenkinsJobName" . }}
+          labels:
+            heritage: {{.Release.Service | quote }}
+            release: {{.Release.Name | quote }}
+            chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+        spec:
+          restartPolicy: "Never"
+          containers:
+            - name: {{ template "jenkinsJobName" . }}
+              image: "{{.Values.agent.images.gradle}}"
+              imagePullPolicy: Always
+              command: 
+                - "/bin/bash"
+                - "-ec"
+                - "/var/jenkins_config/build-jenkins-jobs.sh"
+              volumeMounts:
+                - name: job-data
+                  mountPath: /etc/jenkins_jobs
+                - name: jenkinshome
+                  mountPath: /var/jenkins_home
+                - name: jenkins-config
+                  mountPath: /var/jenkins_config
+                  readOnly: false
+                - name: jenkins-ssh-keys
+                  mountPath: /etc/jenkins-ssh-keys
+                  readOnly: true
+          volumes:
+            - name: job-data
+              emptyDir: {}
+            - name: jenkinshome
+              emptyDir: {}
+            - name: jenkins-config
+              configMap:
+                name: jenkins-configuration
+                defaultMode: 0775
+            - name: jenkins-ssh-keys
+              secret:
+                secretName: jenkins-ssh-{{.Release.Name}}
+                defaultMode: 0400

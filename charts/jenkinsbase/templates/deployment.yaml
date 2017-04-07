@@ -26,9 +26,25 @@ spec:
       annotations:
         "pod.beta.kubernetes.io/init-containers": '[
           {
-              "name": "copy-default-configs",
+            "name": "copy-default-configs",
+            "imagePullPolicy": "Always",
+            "image": "{{.Values.agent.images.gke}}",
+            "command": ["bash", "-ec", "/var/jenkins_config/render-jenkins-config.sh"],
+            "volumeMounts": [
+                {
+                    "name": "jenkins-config",
+                    "mountPath": "/var/jenkins_config"
+                },
+                {
+                    "name": "jenkins-home",
+                    "mountPath": "/var/jenkins_home"
+                }
+            ]
+          },
+          {
+              "name": "create-job-creation-job",
               "imagePullPolicy": "Always",
-              "image": "{{.Values.master.image}}",
+              "image": "{{.Values.agent.images.gke}}",
               "command": ["bash", "-ec", "/var/jenkins_config/render-jenkins-config.sh"],
               "volumeMounts": [
                   {
@@ -41,7 +57,7 @@ spec:
                   },
                   {
                       "name": "jenkins-jobs",
-                      "mountPath": "/etc/jenkins-jobs"
+                      "mountPath": "/etc/jenkins_jobs"
                   }
               ]
           }

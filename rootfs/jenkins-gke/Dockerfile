@@ -23,6 +23,7 @@ RUN export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)" \
     && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - \
     && apt-get update && apt-get install -y -q google-cloud-sdk \
     && wget -O /usr/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/${KUBERNETES_VERSION}/bin/linux/amd64/kubectl
+    && chmod +x /usr/bin/kubectl
 
 # Install helm
 RUN wget http://storage.googleapis.com/kubernetes-helm/helm-${HELM_VERSION}-linux-amd64.tar.gz \
