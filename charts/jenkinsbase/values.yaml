@@ -59,7 +59,9 @@ ldap:
   managerDNPassword: "change me"
 
 agent:
-  image: "set me"
+  images:
+    gradle: "set me"
+    gke: "set me"  
   cpu: "200m"
   memory: "1024Mi"
   port: 50000

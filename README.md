@@ -84,7 +84,8 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 ### Agent
 | Parameter | Description | Default |
 | --- | --- | --- |
-| `agent.image` | Agent image name | `set me` |
+| `agent.images.gradle` | Image name with gradle tools installed | `set me` |
+| `agent.images.gke` | Image name with gke tools installed | `set me` |
 | `agent.cpu` | Agent requested cpu | `200m` |
 | `agent.memory` | Agent requested memory | `1024Mi` |
 | `agent.port` | Agent requested port | `50000` |
