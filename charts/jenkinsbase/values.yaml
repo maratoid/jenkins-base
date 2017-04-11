@@ -18,6 +18,16 @@ seedJobToken: "seed"
 security: "jenkins"
 adminUserSalt: "change me if using jenkins security"
 
+# Storageclass must be pre provisioned on the Kubernetes cluster prior to installing jenkins
+persistence:
+  component: "data_volume"
+  storageClass: "storageclass name"
+  zone: "comma seperated availibility zones for GCP"         # ie. us-east1-b, us-east1-a, us-east1-c, us-east1-f
+  enabled: true
+  accessMode: "ReadWriteOnce"
+  claimName: "jenkins-jobs"
+  size: 10Gi
+
 slack:
   slackDomain: "samsung-cnct"
   slackRoom: "#ping-jenkins"
@@ -56,7 +66,7 @@ ldap:
   userSearchBase:
   userSearchFilter: "uid={0}"
   groupMembershipFilter:
-  managerDN:
+  managerDN:`
   managerDNPassword: "change me"
 
 agent:
