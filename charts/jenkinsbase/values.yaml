@@ -66,7 +66,7 @@ ldap:
   userSearchBase:
   userSearchFilter: "uid={0}"
   groupMembershipFilter:
-  managerDN:`
+  managerDN:
   managerDNPassword: "change me"
 
 agent:
