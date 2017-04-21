@@ -148,7 +148,7 @@ spec:
       {{- if .Values.persistence.enabled }}
       - name: jenkins-jobs
         persistentVolumeClaim:
-          claimName: jenkins
+          claimName: {{.Values.persistence.claimName}}
       {{- else }}
       - name: jenkins-jobs
         emptyDir: {}
