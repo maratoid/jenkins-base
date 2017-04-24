@@ -15,7 +15,6 @@ spec:
     - port: {{.Values.master.port}}
       name: masterport
       targetPort: {{.Values.master.port}}
-      nodePort: {{.Values.master.nodePort}}
     - port: {{.Values.agent.port}}
       targetPort: {{.Values.agent.port}}
       name: agentport

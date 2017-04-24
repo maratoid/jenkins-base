@@ -83,7 +83,6 @@ master:
   memory: "1024Mi"
   port: 8080
   serviceType: "NodePort"
-  nodePort: 30061
 
 helm:
   svcAccountId: "change me"
