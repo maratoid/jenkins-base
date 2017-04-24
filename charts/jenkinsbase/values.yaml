@@ -13,6 +13,7 @@ jenkinsUrl: "jenkins.somedomain.io"
 jobsRepo: "URL to jobs repo"
 workflowRepo: "https://github.com/samsung-cnct/k8s-pipeline-library"
 seedJobToken: "seed"
+loadbalancer: "loadbalancer-lbex"
 
 # github, jenkins or ldap
 security: "jenkins"
