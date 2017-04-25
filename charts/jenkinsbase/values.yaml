@@ -13,6 +13,7 @@ jenkinsUrl: "jenkins.somedomain.io"
 jobsRepo: "URL to jobs repo"
 workflowRepo: "https://github.com/samsung-cnct/k8s-pipeline-library"
 seedJobToken: "seed"
+loadbalancer: "loadbalancer-lbex"
 
 # github, jenkins or ldap
 security: "jenkins"
@@ -82,8 +83,8 @@ master:
   cpu: "200m"
   memory: "1024Mi"
   port: 8080
+  externalPort: 8080
   serviceType: "NodePort"
-  nodePort: 30061
 
 helm:
   svcAccountId: "change me"
