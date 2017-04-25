@@ -97,6 +97,7 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 | `master.cpu` | Master requested cpu | `200m` |
 | `master.memory` | Master requested memory | `1024Mi` |
 | `master.port` | k8s service port | `8080` |
+| `master.externalPort` | optional port to be exposed through lbex | `8080` |
 | `master.serviceType` | k8s service type | `NodePort` |
 | `master.nodePort` | k8s node port | `30061` |
 
