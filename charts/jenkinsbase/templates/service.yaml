@@ -10,10 +10,10 @@ metadata:
     component: "{{.Release.Name}}-jenkins-master"
   annotations:
     "helm.sh/created": {{.Release.Time.Seconds | quote }}
-    kubernetes.io/loadbalancer-class: "{{ .Values.loadbalancer }}"
+    "kubernetes.io/loadbalancer-class": "{{ .Values.loadbalancer }}"
     {{- if .Values.master.externalPort }}
-    loadbalancer.lbex/port: {{ .Values.master.externalPort }}
-    {{- end -}}
+    "loadbalancer.lbex/port": "{{ .Values.master.externalPort }}"
+    {{- end }}
 spec:
   ports:
     - port: {{.Values.master.port}}
