@@ -12,15 +12,13 @@ metadata:
     "helm.sh/created": {{.Release.Time.Seconds | quote }}
     "kubernetes.io/loadbalancer-class": "{{ .Values.loadbalancer }}"
     {{- if .Values.master.externalPort }}
-    "loadbalancer.lbex/port": "{{ .Values.master.externalPort }}"
+    "loadbalancer-port.lbex/masterport": "{{ .Values.master.lbexPort }}"
     {{- end }}
 spec:
   ports:
     - port: {{.Values.master.port}}
       name: masterport
-      targetPort: {{.Values.master.port}}
     - port: {{.Values.agent.port}}
-      targetPort: {{.Values.agent.port}}
       name: agentport
   selector:
     name: jenkins
