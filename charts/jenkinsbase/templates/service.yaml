@@ -18,8 +18,12 @@ spec:
   ports:
     - port: {{.Values.master.port}}
       name: masterport
+      protocol: TCP
+      targetPort: {{.Values.master.port}}
     - port: {{.Values.agent.port}}
       name: agentport
+      protocol: TCP
+      targetPort: {{.Values.agent.port}}
   selector:
     name: jenkins
   type: {{.Values.master.serviceType}}
