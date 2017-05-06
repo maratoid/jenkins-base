@@ -87,9 +87,9 @@ data:
           <templates/>
           <serverUrl>https://kubernetes.default.svc.cluster.local</serverUrl>
           <skipTlsVerify>true</skipTlsVerify>
-          <namespace>default</namespace>
-          <jenkinsUrl>http://jenkins:8080</jenkinsUrl>
-          <jenkinsTunnel>jenkins:50000</jenkinsTunnel>
+          <namespace>{{ .Release.Namespace }}</namespace>
+          <jenkinsUrl>http://jenkins:{{ .Values.master.port }}</jenkinsUrl>
+          <jenkinsTunnel>jenkins:{{ .Values.agent.port }}</jenkinsTunnel>
           <credentialsId>jenkins-service-account</credentialsId>
           <containerCap>50</containerCap>
           <retentionTimeout>5</retentionTimeout>
