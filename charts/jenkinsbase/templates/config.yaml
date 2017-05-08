@@ -258,8 +258,9 @@ data:
     <?xml version='1.0' encoding='UTF-8'?>
     <scriptApproval plugin="script-security@1.25">
       <approvedScriptHashes>
-        <string>fd236dedb591d7396b30e265554ea1210fe726f1</string>
         <string>6a401bc0a59f634f49084195078b6efc5171efac</string>
+        <string>bab7581955ec38541b43d57b7d766f3e377eae1c</string>
+        <string>fd236dedb591d7396b30e265554ea1210fe726f1</string>
       </approvedScriptHashes>
       <approvedSignatures>
         <string>method groovy.json.JsonSlurperClassic parseText java.lang.String</string>
