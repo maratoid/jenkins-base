@@ -258,8 +258,14 @@ data:
     <?xml version='1.0' encoding='UTF-8'?>
     <scriptApproval plugin="script-security@1.25">
       <approvedScriptHashes>
+        <string>1abcc62d17dae38c1b786c20ab8bc2a4a2edc291</string>
+        <string>41b754a597fc671abc48b22a9002a37a595441bb</string>
+        <string>48653c17af46adfc3c39a90d9f8c2833ad141e56</string>
         <string>6a401bc0a59f634f49084195078b6efc5171efac</string>
+        <string>a324c6b953f03b529fe30b3b01ee840aec5f56dc</string>
         <string>bab7581955ec38541b43d57b7d766f3e377eae1c</string>
+        <string>dc1c5d2fdd763978dc2a63d8f9558a68174cb79f</string>
+        <string>e8bb047ef1efe6c90c896b0df66b378c4cdd2a0d</string>
         <string>fd236dedb591d7396b30e265554ea1210fe726f1</string>
       </approvedScriptHashes>
       <approvedSignatures>
