@@ -290,10 +290,12 @@ data:
         <string>new java.util.ArrayList java.util.Collection</string>
         <string>new java.util.HashMap java.util.Map</string>
         <string>new org.yaml.snakeyaml.DumperOptions</string>
-        <string>new org.yaml.snakeyaml.Yaml org.yaml.snakeyaml.DumperOptions</string>
         <string>new org.yaml.snakeyaml.Yaml</string>
+        <string>new org.yaml.snakeyaml.Yaml org.yaml.snakeyaml.DumperOptions</string>
         <string>staticField hudson.model.Result SUCCESS</string>
         <string>staticField org.yaml.snakeyaml.DumperOptions$FlowStyle BLOCK</string>
+        <string>staticMethod hudson.model.Hudson getInstance</string>
+        <string>staticMethod java.lang.Thread currentThread</string>
         <string>staticMethod java.util.regex.Pattern quote java.lang.String</string>
         <string>staticMethod jenkins.model.Jenkins getInstance</string>
         <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods addAll java.util.Collection java.lang.Object[]</string>
@@ -302,6 +304,7 @@ data:
         <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods invokeMethod java.lang.Object java.lang.String java.lang.Object</string>
         <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods leftShift java.util.Map java.util.Map</string>
         <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods println java.lang.Object java.lang.Object</string>
+        <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods toBoolean java.lang.Boolean</string>
         <string>staticMethod org.codehaus.groovy.runtime.ScriptBytecodeAdapter createRange java.lang.Object java.lang.Object boolean</string>
       </approvedSignatures>
       <aclApprovedSignatures/>
