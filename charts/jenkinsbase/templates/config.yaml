@@ -448,6 +448,7 @@ data:
 
   create-k8s-job.sh: |-
     #!/bin/bash
+    kubectl delete -f /var/jenkins_config/create-jobs.yaml || true
     kubectl create -f /var/jenkins_config/create-jobs.yaml
 
   build-jenkins-jobs.sh: |-
