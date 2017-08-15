@@ -306,6 +306,7 @@ data:
         <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods println java.lang.Object java.lang.Object</string>
         <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods toBoolean java.lang.Boolean</string>
         <string>staticMethod org.codehaus.groovy.runtime.ScriptBytecodeAdapter createRange java.lang.Object java.lang.Object boolean</string>
+        <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods getAt java.lang.Object java.lang.String</string>
       </approvedSignatures>
       <aclApprovedSignatures/>
       <approvedClasspathEntries/>
@@ -447,6 +448,7 @@ data:
 
   create-k8s-job.sh: |-
     #!/bin/bash
+    kubectl delete -f /var/jenkins_config/create-jobs.yaml || true
     kubectl create -f /var/jenkins_config/create-jobs.yaml
 
   build-jenkins-jobs.sh: |-
