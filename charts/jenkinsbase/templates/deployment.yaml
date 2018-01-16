@@ -28,7 +28,7 @@ spec:
           {
             "name": "copy-default-configs",
             "imagePullPolicy": "Always",
-            "image": "{{.Values.agent.images.gke}}",
+            "image": "{{.Values.images.agent}}",
             "command": ["bash", "-ec", "/var/jenkins_config/render-jenkins-config.sh"],
             "volumeMounts": [
                 {
@@ -44,7 +44,7 @@ spec:
           {
               "name": "create-job-creation-job",
               "imagePullPolicy": "Always",
-              "image": "{{.Values.agent.images.gke}}",
+              "image": "{{.Values.images.agent}}",
               "command": ["bash", "-ec", "/var/jenkins_config/create-k8s-job.sh"],
               "volumeMounts": [
                   {
@@ -67,7 +67,7 @@ spec:
         runAsUser: 0
       containers:
         - name: jenkins
-          image: "{{.Values.master.image}}"
+          image: "{{.Values.images.master}}"
           imagePullPolicy: Always
           env:
             - name: JAVA_OPTS

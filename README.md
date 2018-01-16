@@ -7,14 +7,14 @@ Jenkins cluster utilizing the Jenkins Kubernetes plugin
 ## Chart Details
 This chart will do the following:
 
-* 1 x Jenkins Master with port 8080 exposed on an external LoadBalancer
+* 1 x Jenkins Master with port 8080 exposed
 * All using Kubernetes Deployments
 
 ## Configuration
 
 The following tables lists the configurable parameters of the Jenkins chart and their default values.
 
-### GitHub, Jenkins, or LDAP Authentication
+### GitHub, Jenkins, or LDAP Authentication, images
 | Parameter | Description | Default |
 | --- | --- | --- |
 | `adminEmail` | Administrator email address | `me@email.com` |
@@ -28,6 +28,9 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 | `seedJobToken` | Seed job token | `seed` |
 | `security` | Security type (`github`, `jenkins`, or `ldap`) | `jenkins` |
 | `adminUserSalt` | Admin user salt; change if using Jenkins security | `change me if using jenkins security` |
+| `images.gradle` | Image name with gradle tools installed | `set me` |
+| `images.agent` | Image name with gke tools installed | `set me` |
+| `images.master` | Master jenkins image | `set me` |
 
 
 ### Slack
@@ -84,8 +87,6 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 ### Agent
 | Parameter | Description | Default |
 | --- | --- | --- |
-| `agent.images.gradle` | Image name with gradle tools installed | `set me` |
-| `agent.images.gke` | Image name with gke tools installed | `set me` |
 | `agent.cpu` | Agent requested cpu | `200m` |
 | `agent.memory` | Agent requested memory | `1024Mi` |
 | `agent.port` | Agent requested port | `50000` |
@@ -93,11 +94,9 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 ### Master
 | Parameter | Description | Default |
 | --- | --- | --- |
-| `master.image` | Master image name | `set me` |
 | `master.cpu` | Master requested cpu | `200m` |
 | `master.memory` | Master requested memory | `1024Mi` |
 | `master.port` | k8s service port | `8080` |
-| `master.externalPort` | optional port to be exposed through lbex | `8080` |
 | `master.serviceType` | k8s service type | `NodePort` |
 | `master.nodePort` | k8s node port | `30061` |
 

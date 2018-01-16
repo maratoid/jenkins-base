@@ -7,8 +7,9 @@ data:
     <hudson>
       <disabledAdministrativeMonitors>
         <string>hudson.diagnosis.ReverseProxySetupMonitor</string>
+        <string>hudson.diagnosis.TooManyJobsButNoView</string>
       </disabledAdministrativeMonitors>
-      <version>2.58</version>
+      <version>2.102</version>
       <numExecutors>1</numExecutors>
       <mode>NORMAL</mode>
       <useSecurity>true</useSecurity>
@@ -82,8 +83,9 @@ data:
       <viewsTabBar class="hudson.views.DefaultViewsTabBar"/>
       <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar"/>
       <clouds>
-        <org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud plugin="kubernetes@0.10">
+        <org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud plugin="kubernetes@1.1.3">
           <name>kubernetes</name>
+          <defaultsProviderTemplate></defaultsProviderTemplate>
           <templates/>
           <serverUrl>https://kubernetes.default.svc.cluster.local</serverUrl>
           <skipTlsVerify>true</skipTlsVerify>
@@ -92,7 +94,10 @@ data:
           <jenkinsTunnel>jenkins:{{ .Values.agent.port }}</jenkinsTunnel>
           <credentialsId>jenkins-service-account</credentialsId>
           <containerCap>50</containerCap>
+          <connectTimeout>5</connectTimeout>
           <retentionTimeout>5</retentionTimeout>
+          <readTimeout>15</readTimeout>
+          <maxRequestsPerHost>{{ .Values.agent.requestsPerHost }}</maxRequestsPerHost>
         </org.csanchez.jenkins.plugins.kubernetes.KubernetesCloud>
       </clouds>
       <quietPeriod>5</quietPeriod>
@@ -108,7 +113,14 @@ data:
       </views>
       <primaryView>All</primaryView>
       <slaveAgentPort>50000</slaveAgentPort>
+      <disabledAgentProtocols>
+        <string>JNLP-connect</string>
+        <string>JNLP2-connect</string>
+      </disabledAgentProtocols>
       <label>jobdsl</label>
+      <crumbIssuer class="hudson.security.csrf.DefaultCrumbIssuer">
+        <excludeClientIPFromCrumb>true</excludeClientIPFromCrumb>
+      </crumbIssuer>
       <nodeProperties/>
       <globalNodeProperties>
         <hudson.slaves.EnvironmentVariablesNodeProperty>
@@ -137,7 +149,6 @@ data:
       </globalNodeProperties>
       <noUsageStatistics>true</noUsageStatistics>
     </hudson>
-
   {{ if eq .Values.security "jenkins" }}
   admin-config.xml: |-
     <?xml version='1.0' encoding='UTF-8'?>
@@ -176,64 +187,9 @@ data:
       </properties>
     </user>
   {{ end }}
-  
-  org.jenkinsci.plugins.ghprb.GhprbTrigger.xml: |-
-    <?xml version='1.0' encoding='UTF-8'?>
-    <org.jenkinsci.plugins.ghprb.GhprbTrigger_-DescriptorImpl plugin="ghprb@1.34.0">
-      <configVersion>1</configVersion>
-      <whitelistPhrase>.*add\W+to\W+whitelist.*</whitelistPhrase>
-      <okToTestPhrase>.*ok\W+to\W+test.*</okToTestPhrase>
-      <retestPhrase>.*test\W+this\W+please.*</retestPhrase>
-      <skipBuildPhrase>.*\[skip\W+ci\].*</skipBuildPhrase>
-      <cron>H/5 * * * *</cron>
-      <useComments>true</useComments>
-      <useDetailedComments>true</useDetailedComments>
-      {{if eq .Values.security "github"}}
-      <manageWebhooks>true</manageWebhooks>
-      {{else}}
-      <manageWebhooks>false</manageWebhooks>
-      {{end}}
-      <unstableAs>FAILURE</unstableAs>
-      <autoCloseFailedPullRequests>false</autoCloseFailedPullRequests>
-      <displayBuildErrorsOnDownstreamBuilds>false</displayBuildErrorsOnDownstreamBuilds>
-      <githubAuth>
-        <org.jenkinsci.plugins.ghprb.GhprbGitHubAuth>
-          <serverAPIUrl>https://api.github.com</serverAPIUrl>
-          <jenkinsUrl>https://{{.Values.jenkinsUrl}}</jenkinsUrl>
-          <credentialsId>github-access</credentialsId>
-          <id>github-access</id>
-          <description>Jenkins bot github account</description>
-          <secret>{{ .Values.github.githubAccessToken }}</secret>
-        </org.jenkinsci.plugins.ghprb.GhprbGitHubAuth>
-      </githubAuth>
-      <adminlist>{{.Values.github.admin_usernames}}</adminlist>
-      <requestForTestingPhrase>Can one of the admins verify this patch?</requestForTestingPhrase>
-      <extensions>
-        <org.jenkinsci.plugins.ghprb.extensions.comments.GhprbBuildStatus>
-          <messages>
-            <org.jenkinsci.plugins.ghprb.extensions.comments.GhprbBuildResultMessage>
-              <message>Test FAILed.</message>
-              <result>FAILURE</result>
-            </org.jenkinsci.plugins.ghprb.extensions.comments.GhprbBuildResultMessage>
-            <org.jenkinsci.plugins.ghprb.extensions.comments.GhprbBuildResultMessage>
-              <message>Test PASSed.</message>
-              <result>SUCCESS</result>
-            </org.jenkinsci.plugins.ghprb.extensions.comments.GhprbBuildResultMessage>
-          </messages>
-        </org.jenkinsci.plugins.ghprb.extensions.comments.GhprbBuildStatus>
-        <org.jenkinsci.plugins.ghprb.extensions.status.GhprbSimpleStatus>
-          <commitStatusContext></commitStatusContext>
-          <triggeredStatus></triggeredStatus>
-          <startedStatus></startedStatus>
-          <statusUrl></statusUrl>
-          <addTestResults>false</addTestResults>
-        </org.jenkinsci.plugins.ghprb.extensions.status.GhprbSimpleStatus>
-      </extensions>
-    </org.jenkinsci.plugins.ghprb.GhprbTrigger_-DescriptorImpl>           
-  
   github-plugin-configuration.xml: |-
     <?xml version='1.0' encoding='UTF-8'?>
-    <github-plugin-configuration plugin="github@1.25.1">
+    <github-plugin-configuration plugin="github@1.28.1">
       <configs>
         <github-server-config>
           <apiUrl>https://api.github.com</apiUrl>
@@ -253,10 +209,9 @@ data:
         <credentialsId>github-access</credentialsId>
       </hookSecretConfig>
     </github-plugin-configuration> 
-
   scriptApproval.xml: |-
     <?xml version='1.0' encoding='UTF-8'?>
-    <scriptApproval plugin="script-security@1.25">
+    <scriptApproval plugin="script-security@1.40">
       <approvedScriptHashes>
         <string>1abcc62d17dae38c1b786c20ab8bc2a4a2edc291</string>
         <string>41b754a597fc671abc48b22a9002a37a595441bb</string>
@@ -306,7 +261,6 @@ data:
         <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods println java.lang.Object java.lang.Object</string>
         <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods toBoolean java.lang.Boolean</string>
         <string>staticMethod org.codehaus.groovy.runtime.ScriptBytecodeAdapter createRange java.lang.Object java.lang.Object boolean</string>
-        <string>staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods getAt java.lang.Object java.lang.String</string>
       </approvedSignatures>
       <aclApprovedSignatures/>
       <approvedClasspathEntries/>
@@ -314,26 +268,23 @@ data:
       <pendingSignatures/>
       <pendingClasspathEntries/>
     </scriptApproval>
-  
   jenkins.plugins.slack.SlackNotifier.xml: |-
     <?xml version='1.0' encoding='UTF-8'?>
-    <jenkins.plugins.slack.SlackNotifier_-DescriptorImpl plugin="slack@2.1">
+    <jenkins.plugins.slack.SlackNotifier_-DescriptorImpl plugin="slack@2.3">
       <teamDomain>{{ .Values.slack.slackDomain }}</teamDomain>
       <token></token>
       <tokenCredentialId>slack-token</tokenCredentialId>
       <room>{{ .Values.slack.slackRoom }}</room>
     </jenkins.plugins.slack.SlackNotifier_-DescriptorImpl>  
-  
   jenkins.model.JenkinsLocationConfiguration.xml: |-
     <?xml version='1.0' encoding='UTF-8'?>
     <jenkins.model.JenkinsLocationConfiguration>
       <adminAddress>{{.Values.adminEmail}}</adminAddress>
       <jenkinsUrl>https://{{.Values.jenkinsUrl}}/</jenkinsUrl>
-    </jenkins.model.JenkinsLocationConfiguration>   
-  
+    </jenkins.model.JenkinsLocationConfiguration>    
   credentials.xml: |-
     <?xml version='1.0' encoding='UTF-8'?>
-    <com.cloudbees.plugins.credentials.SystemCredentialsProvider plugin="credentials@2.1.10">
+    <com.cloudbees.plugins.credentials.SystemCredentialsProvider plugin="credentials@2.1.16">
       <domainCredentialsMap class="hudson.util.CopyOnWriteMap$Hash">
         <entry>
           <com.cloudbees.plugins.credentials.domains.Domain>
@@ -395,30 +346,7 @@ data:
           </list>
         </entry>
       </domainCredentialsMap>
-    </com.cloudbees.plugins.credentials.SystemCredentialsProvider>
-  org.jenkinsci.plugins.workflow.libs.GlobalLibraries.xml:
-    <?xml version='1.0' encoding='UTF-8'?>
-    <org.jenkinsci.plugins.workflow.libs.GlobalLibraries plugin="workflow-cps-global-lib@2.5">
-      <libraries>
-        <org.jenkinsci.plugins.workflow.libs.LibraryConfiguration>
-          <name>pipeline</name>
-          <retriever class="org.jenkinsci.plugins.workflow.libs.SCMSourceRetriever">
-            <scm class="jenkins.plugins.git.GitSCMSource" plugin="git@3.0.4">
-              <id>1f833e15-b6ca-4395-99a6-02900acceaa9</id>
-              <remote>{{.Values.workflowRepo }}</remote>
-              <credentialsId>repo-scan-access</credentialsId>
-              <includes>*</includes>
-              <excludes></excludes>
-              <ignoreOnPushNotifications>false</ignoreOnPushNotifications>
-            </scm>
-          </retriever>
-          <defaultVersion>master</defaultVersion>
-          <implicit>false</implicit>
-          <allowVersionOverride>true</allowVersionOverride>
-        </org.jenkinsci.plugins.workflow.libs.LibraryConfiguration>
-      </libraries>
-    </org.jenkinsci.plugins.workflow.libs.GlobalLibraries>
-     
+    </com.cloudbees.plugins.credentials.SystemCredentialsProvider>   
   render-jenkins-config.sh: |-
     #!/bin/bash
 
@@ -426,7 +354,6 @@ data:
     cp -f /var/jenkins_config/config.xml /var/jenkins_home
     cp -f /var/jenkins_config/credentials.xml /var/jenkins_home
     cp -f /var/jenkins_config/jenkins.plugins.slack.SlackNotifier.xml /var/jenkins_home
-    cp -f /var/jenkins_config/org.jenkinsci.plugins.ghprb.GhprbTrigger.xml /var/jenkins_home
     cp -f /var/jenkins_config/jenkins.model.JenkinsLocationConfiguration.xml /var/jenkins_home
     cp -f /var/jenkins_config/github-plugin-configuration.xml /var/jenkins_home
     cp -f /var/jenkins_config/scriptApproval.xml /var/jenkins_home
@@ -445,12 +372,10 @@ data:
     {{ if eq .Values.security "jenkins" }}
     sed -i -e "s/\$SALTED_SHASUM/"{{ .Values.adminUserSalt }}:$(printf "{{ .Values.adminPassword }}{ {{ .Values.adminUserSalt }} }" | tr -d ' ' | shasum -a 256 | cut -d " " -f 1)"/" /var/jenkins_home/users/admin/config.xml
     {{ end }}
-
   create-k8s-job.sh: |-
     #!/bin/bash
     kubectl delete -f /var/jenkins_config/create-jobs.yaml || true
     kubectl create -f /var/jenkins_config/create-jobs.yaml
-
   build-jenkins-jobs.sh: |-
     #!/bin/bash
 
@@ -522,7 +447,7 @@ data:
           restartPolicy: "Never"
           containers:
             - name: {{ template "jenkinsJobName" . }}
-              image: "{{ .Values.agent.images.gradle }}"
+              image: "{{ .Values.images.gradle }}"
               imagePullPolicy: Always
               command: 
                 - "/bin/bash"
