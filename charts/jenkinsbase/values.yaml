@@ -4,9 +4,10 @@
 # name: value
 
 images:
-  master: "gcr.io/sds-readiness/jenkins-master:latest"
-  agent: "gcr.io/sds-readiness/jenkins-gke:latest"
-  gradle: "gcr.io/sds-readiness/jenkins-job-create:prod"
+  jenkinsmaster: "gcr.io/sds-readiness/jenkinsmaster:latest"
+  jenkinsagent: "gcr.io/sds-readiness/jenkinsagent:latest"
+  jenkinsgradle: "gcr.io/sds-readiness/jenkinsgradle:prod"
+  jenkinsshelldev: "gcr.io/sds-readiness/jenkinsshelldev:prod"
 
 # github, jenkins or ldap
 adminEmail: "me@email.com"

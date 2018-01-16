@@ -28,9 +28,10 @@ The following tables lists the configurable parameters of the Jenkins chart and 
 | `seedJobToken` | Seed job token | `seed` |
 | `security` | Security type (`github`, `jenkins`, or `ldap`) | `jenkins` |
 | `adminUserSalt` | Admin user salt; change if using Jenkins security | `change me if using jenkins security` |
-| `images.gradle` | Image name with gradle tools installed | `set me` |
-| `images.agent` | Image name with gke tools installed | `set me` |
-| `images.master` | Master jenkins image | `set me` |
+| `images.jenkinsgradle` | Image name with gradle tools installed | `set me` |
+| `images.jenkinsagent` | Image name with gke tools installed | `set me` |
+| `images.jenkinsmaster` | Master jenkins image | `set me` |
+| `images.jenkinsshelldev` | BATS image image | `set me` |
 
 
 ### Slack
