@@ -11,7 +11,6 @@ javaOptions: "-Xms1024m -Xmx1024m -Djenkins.install.runSetupWizard=false"
 jenkinsHookUrl:
 jenkinsUrl: "jenkins.somedomain.io"
 jobsRepo: "URL to jobs repo"
-workflowRepo: "https://github.com/samsung-cnct/k8s-pipeline-library"
 seedJobToken: "seed"
 loadbalancer: "loadbalancer-lbex"
 
@@ -69,6 +68,7 @@ agent:
   cpu: "200m"
   memory: "1024Mi"
   port: 50000
+  requestsPerHost: 100
 
 master:
   image: "set me"
