@@ -447,7 +447,7 @@ data:
           restartPolicy: "Never"
           containers:
             - name: {{ template "jenkinsJobName" . }}
-              image: "{{ .Values.agent.images.gradle }}"
+              image: "{{ .Values.images.gradle }}"
               imagePullPolicy: Always
               command: 
                 - "/bin/bash"

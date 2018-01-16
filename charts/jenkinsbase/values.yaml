@@ -3,6 +3,11 @@
 # Declare name/value pairs to be passed into your templates.
 # name: value
 
+images:
+  master: "gcr.io/sds-readiness/jenkins-master:latest"
+  agent: "gcr.io/sds-readiness/jenkins-gke:latest"
+  gradle: "gcr.io/sds-readiness/jenkins-job-create:prod"
+
 # github, jenkins or ldap
 adminEmail: "me@email.com"
 adminPassword: "admin"
@@ -12,7 +17,6 @@ jenkinsHookUrl:
 jenkinsUrl: "jenkins.somedomain.io"
 jobsRepo: "URL to jobs repo"
 seedJobToken: "seed"
-loadbalancer: "loadbalancer-lbex"
 
 # github, jenkins or ldap
 security: "jenkins"
@@ -62,20 +66,15 @@ ldap:
   managerDNPassword: "change me"
 
 agent:
-  images:
-    gradle: "set me"
-    gke: "set me"  
   cpu: "200m"
   memory: "1024Mi"
   port: 50000
   requestsPerHost: 100
 
 master:
-  image: "set me"
   cpu: "200m"
   memory: "1024Mi"
   port: 8080
-  lbexPort: 8080
   serviceType: "NodePort"
 
 helm:
